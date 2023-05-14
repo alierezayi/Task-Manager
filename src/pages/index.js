@@ -1,11 +1,11 @@
 import Layout from "@/components/layout";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Home() {
-  return (
-    <Layout>
-      <div className="bg-blue-300">
-        
-      </div>
-    </Layout>
-  );
+  const { push } = useRouter();
+  useEffect(() => {
+    push("/dashboard");
+  }, []);
+  return null;
 }
