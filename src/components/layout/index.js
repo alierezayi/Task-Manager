@@ -7,16 +7,16 @@ const Layout = ({ children }) => {
   return (
     <>
       <Head>
-        <title>صفحه اصلی</title>
+        {/* <title>صفحه اصلی</title> */}
       </Head>
       <div className="flex flex-col min-h-screen">
+        {/* header */}
         <Header />
 
+        {/* section */}
         <div className="min-h-screen">
           <main>{children}</main>
         </div>
-
-        <Footer />
       </div>
     </>
   );

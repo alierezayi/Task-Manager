@@ -1,9 +1,12 @@
 import { Fragment, useState } from "react";
 
 import { Disclosure, Menu, Transition, Tab } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-
-
+import {
+  ArrowRightOnRectangleIcon,
+  BellIcon,
+  XMarkIcon,
+  EllipsisVerticalIcon,
+} from "@heroicons/react/24/outline";
 
 export default function Example() {
   const user = {
@@ -20,7 +23,7 @@ export default function Example() {
   const userNavigation = [
     { name: "پروفایل", href: "#" },
     { name: "تنظیمات", href: "#" },
-    { name: "خروج حساب کاربری", href: "#" },
+    { name: "خروج حساب کاربری", href: "/logout" },
   ];
 
   function classNames(...classes) {
@@ -32,13 +35,13 @@ export default function Example() {
       <Disclosure as="nav" className="bg-white border-b border-b-slate-100">
         {({ open }) => (
           <>
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="px-4 sm:px-6 lg:px-8 container mx-auto">
               <div className="flex h-16 items-center justify-between">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
                     <img
                       className="h-8 w-8"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                      src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=500"
                       alt="Your Company"
                     />
                   </div>
@@ -94,21 +97,38 @@ export default function Example() {
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="absolute left-0 z-10 mt-2 px-1 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                          {userNavigation.map((item) => (
-                            <Menu.Item key={item.name}>
-                              {({ active }) => (
-                                <a
-                                  href={item.href}
-                                  className={classNames(
-                                    active ? "bg-gray-100" : "",
-                                    "block px-3 py-2 text-sm text-gray-700 rounded-md"
-                                  )}
-                                >
-                                  {item.name}
-                                </a>
-                              )}
-                            </Menu.Item>
-                          ))}
+                          {userNavigation.map((item) =>
+                            item.href === "/logout" ? (
+                              <Menu.Item key={item.name}>
+                                {({ active }) => (
+                                  <a
+                                    href={item.href}
+                                    className={classNames(
+                                      active ? "bg-gray-100" : "",
+                                      "px-3 py-2 text-sm text-red-500 rounded-md flex items-center"
+                                    )}
+                                  >
+                                    <ArrowRightOnRectangleIcon className="w-6 h-6" />
+                                    <span>{item.name}</span>
+                                  </a>
+                                )}
+                              </Menu.Item>
+                            ) : (
+                              <Menu.Item key={item.name}>
+                                {({ active }) => (
+                                  <a
+                                    href={item.href}
+                                    className={classNames(
+                                      active ? "bg-gray-100" : "",
+                                      "block px-3 py-2 text-sm text-gray-700 rounded-md"
+                                    )}
+                                  >
+                                    {item.name}
+                                  </a>
+                                )}
+                              </Menu.Item>
+                            )
+                          )}
                         </Menu.Items>
                       </Transition>
                     </Menu>
@@ -116,12 +136,15 @@ export default function Example() {
                 </div>
                 <div className="-ml-2 flex md:hidden">
                   {/* Mobile menu button */}
-                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md bg-gray-100 p-2 text-gray-500 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-50">
+                  <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-500 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-50">
                     <span className="sr-only">Open main menu</span>
                     {open ? (
                       <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                     ) : (
-                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                      <EllipsisVerticalIcon
+                        className="block h-6 w-6"
+                        aria-hidden="true"
+                      />
                     )}
                   </Disclosure.Button>
                 </div>
