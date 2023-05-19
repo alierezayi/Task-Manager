@@ -108,7 +108,7 @@ export default function Example() {
                                       "px-3 py-2 text-sm text-red-500 rounded-md flex items-center"
                                     )}
                                   >
-                                    <ArrowRightOnRectangleIcon className="w-6 h-6" />
+                                    <ArrowRightOnRectangleIcon className="w-5 h-5" />
                                     <span>{item.name}</span>
                                   </a>
                                 )}

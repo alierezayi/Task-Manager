@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import { useForm } from "react-hook-form";
 
@@ -53,6 +53,7 @@ export default function SignUp() {
       .catch((error) => {
         setResponseData((prevState) => ({
           ...prevState,
+          pending: false,
           message: error,
         }));
       });
@@ -296,8 +297,10 @@ export default function SignUp() {
           <Notify message="ایمیل خود را وارد کنید" type="error" />
         ) : errors.Password ? (
           <Notify message="رمز عبور جدید را وارد کنید" type="error" />
-        ) : errors.ConfirmPassword && (
-          <Notify message="رمز عبور خود را دوباره وارد کنید" type="error" />
+        ) : (
+          errors.ConfirmPassword && (
+            <Notify message="رمز عبور خود را دوباره وارد کنید" type="error" />
+          )
         )}
 
         {/* submit */}
