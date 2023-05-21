@@ -1,46 +1,29 @@
 import React, { useState } from "react";
+
 import { useForm } from "react-hook-form";
 
-const CheckOtp = ({ setStatus, setData }) => {
+import { useDispatch, useSelector } from "react-redux";
+
+import { checkOtpUser } from "@/features/authSlice";
+
+const CheckOtp = ({ setPhoneNumber, setResponse, response }) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
 
-  // check OTP
-  const checkOtpHandler = (data) => {
-    // send message
-    fetch("http://127.0.0.1:3000/auth/checkOtp", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      .then((response) => response.json())
-      .then(({ message, success }) => {
-        setStatus((prevState) => ({
-          ...prevState,
-          success,
-          message,
-        }));
+  const dispatch = useDispatch();
+  const { pending } = useSelector((state) => state.auth);
 
-        if (success) {
-          setData((prevState) => ({
-            ...prevState,
-            PhoneNumber: data.PhoneNumber,
-          }));
-        }
-      })
-      .catch((error) => {
-        setResponseData((prevState) => ({
-          ...prevState,
-          pending: false,
-          message: error,
-        }));
-      });
+  const checkOtpHandler = async (data) => {
+    const response = await dispatch(checkOtpUser(data));
+
+    setResponse(response.payload);
+
+    if (response.payload.success) {
+      setPhoneNumber(data.PhoneNumber);
+    }
   };
 
   return (
@@ -48,7 +31,7 @@ const CheckOtp = ({ setStatus, setData }) => {
       onSubmit={handleSubmit(checkOtpHandler)}
       className="flex flex-col md:px-6 mt-4"
     >
-      <label className="text-gray-700 mb-3 text-sm">
+      <label className="text-gray-700 mb-5 text-sm">
         لطفا شماره موبایل خود را وارد کنید
       </label>
       <div className="relative">
@@ -70,10 +53,11 @@ const CheckOtp = ({ setStatus, setData }) => {
         {errors.PhoneNumber && "این قسمت نمی تواند خالی باشد"}
       </span>
 
-      <div className="mt-2">
+      <div className="my-1 flex justify-end">
         <button
           type="submit"
-          className="text-blue-600 hover:text-blue-500 text-start text-sm px-2"
+          className="text-blue-600 hover:text-blue-500 disabled:text-blue-300 text-start text-sm px-3"
+          disabled={response.success}
         >
           ارسال کد تایید
         </button>

@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
 
+import { useDispatch, useSelector } from "react-redux";
+
+import { registerUser } from "@/features/authSlice";
+
 import { useForm } from "react-hook-form";
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
@@ -12,52 +16,32 @@ export default function SignUp() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
   const router = useRouter();
 
-  // submit operation
-  const [responseData, setResponseData] = useState({
-    pending: false,
-    success: false,
-    message: "",
-  });
+  const dispatch = useDispatch();
+  const { pending, isAuthenticated } = useSelector((state) => state.auth);
 
-  const onSubmit = (data) => {
-    setResponseData((prevState) => ({
-      ...prevState,
-      pending: true,
-    }));
+  const [response, setResponse] = useState({});
 
-    // post data
-    fetch("http://127.0.0.1:3000/auth/register", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      .then((response) => response.json())
-      .then(({ message, success }) => {
-        setResponseData({
-          pending: false,
-          success,
-          message,
-        });
+  const onSubmit = async (data) => {
+    const response = await dispatch(registerUser(data));
 
-        if (success) {
-          router.push("/dashboard");
-        }
-      })
-      .catch((error) => {
-        setResponseData((prevState) => ({
-          ...prevState,
-          pending: false,
-          message: error,
-        }));
-      });
+    setResponse(response.payload);
+
+    if (response.payload.success) {
+      reset();
+    }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
 
   // handle show/hide pasword input
   const [showPassword, setShowPassword] = useState(false);
@@ -71,11 +55,8 @@ export default function SignUp() {
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col my-3 md:px-6"
-      >
-        <div className="grid grid-cols-4 gap-y-6 gap-x-8 mb-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:px-6">
+        <div className="grid grid-cols-4 gap-y-0.5 gap-x-8 mb-1">
           {/* full name */}
           <div className="col-span-2">
             <div className="relative">
@@ -94,6 +75,9 @@ export default function SignUp() {
                 <span>نام کامل </span>
               </label>
             </div>
+            <span className="text-red-500 mr-1 text-xs">
+              {errors.FullName && "نام کامل الزامی است"}
+            </span>
           </div>
 
           {/* user name */}
@@ -114,6 +98,9 @@ export default function SignUp() {
                 <span>نام کاربری </span>{" "}
               </label>
             </div>
+            <span className="text-red-500 mr-1 text-xs">
+              {errors.UserName && "نام کاربری الزامی است"}
+            </span>
           </div>
 
           {/* phone number */}
@@ -135,6 +122,9 @@ export default function SignUp() {
                 <span>شماره تلفن</span>{" "}
               </label>
             </div>
+            <span className="text-red-500 mr-1 text-xs">
+              {errors.PhoneNumber && "شماره موبایل الزامی است"}
+            </span>
           </div>
 
           {/* email */}
@@ -155,6 +145,9 @@ export default function SignUp() {
                 <span>ایمیل</span>{" "}
               </label>
             </div>
+            <span className="text-red-500 mr-1 text-xs">
+              {errors.Email && "ایمیل الزامی است"}
+            </span>
           </div>
 
           {/* password */}
@@ -186,6 +179,9 @@ export default function SignUp() {
                 <span>رمز عبور</span>{" "}
               </label>
             </div>
+            <span className="text-red-500 mr-1 text-xs">
+              {errors.Password && "رمز عبور الزامی است"}
+            </span>
           </div>
 
           {/* confirm password */}
@@ -217,6 +213,9 @@ export default function SignUp() {
                 <span>تایید رمز عبور</span>{" "}
               </label>
             </div>
+            <span className="text-red-500 mr-1 text-xs">
+              {errors.Password && "رمز عبور را تایید کنید"}
+            </span>
           </div>
 
           {/* role */}
@@ -236,6 +235,9 @@ export default function SignUp() {
                 نقش
               </label>
             </div>
+            <span className="text-red-500 mr-1 text-xs">
+              {errors.Rols && errors.Rols}
+            </span>
           </div>
 
           {/* team */}
@@ -255,6 +257,9 @@ export default function SignUp() {
                 تیم
               </label>
             </div>
+            <span className="text-red-500 mr-1 text-xs">
+              {errors.Teams && errors.Teams}
+            </span>
           </div>
 
           {/* skills */}
@@ -274,43 +279,33 @@ export default function SignUp() {
                 مهارت ها
               </label>
             </div>
+            <span className="text-red-500 mr-1 text-xs">
+              {errors.Skills && errors.Skills}
+            </span>
           </div>
         </div>
 
         {/* show message */}
-        {responseData.message && responseData.success ? (
-          <Notify message={responseData.message} type="success" />
+        {response.message && response.success ? (
+          <span className="mb-5">
+            <Notify message={response.message} type="success" />
+          </span>
         ) : (
-          responseData.message &&
-          !responseData.success && (
-            <Notify message={responseData.message} type="error" />
-          )
-        )}
-
-        {errors.FullName ? (
-          <Notify message="نام کامل را وارد کنید" type="error" />
-        ) : errors.UserName ? (
-          <Notify message="نام کاربری را وارد کنید" type="error" />
-        ) : errors.PhoneNumber ? (
-          <Notify message="شماره تلفن خود را وارد کنید" type="error" />
-        ) : errors.Email ? (
-          <Notify message="ایمیل خود را وارد کنید" type="error" />
-        ) : errors.Password ? (
-          <Notify message="رمز عبور جدید را وارد کنید" type="error" />
-        ) : (
-          errors.ConfirmPassword && (
-            <Notify message="رمز عبور خود را دوباره وارد کنید" type="error" />
+          response.message &&
+          !response.success && (
+            <span className="mb-5">
+              <Notify message={response.message} type="error" />
+            </span>
           )
         )}
 
         {/* submit */}
         <button
           type="submit"
-          className={`${
-            responseData.pending ? "bg-blue-500" : "bg-blue-600"
-          } text-white py-3 rounded-xl active:transform active:scale-[.98] hover:bg-blue-700 transition`}
+          className="bg-blue-600 text-white py-3 rounded-xl active:transform active:scale-[.98] hover:bg-blue-700 transitionb"
+          disabled={pending}
         >
-          {responseData.pending ? (
+          {pending ? (
             <div className="flex items-center justify-center space-x-reverse space-x-3">
               <Spinner />
               <span>در حال پردازش. . .</span>

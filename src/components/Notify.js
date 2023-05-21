@@ -14,7 +14,7 @@ const Notify = ({ message, type }) => {
   return (
     <div
       className={classNames(
-        "p-4 mb-4 text-sm  rounded-lg flex items-center space-x-reverse space-x-3",
+        "p-4 text-sm  rounded-lg flex items-center space-x-reverse space-x-3",
         type === "success"
           ? "text-blue-800 bg-blue-50"
           : type === "error" && "text-rose-800 bg-red-50"

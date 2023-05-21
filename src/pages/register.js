@@ -31,7 +31,7 @@ const register = () => {
             width="auto"
             height="auto"
             alt="registerImage"
-            className="w-[95%] rounded-lg"
+            className="w-[95%] h-[95%] rounded-lg"
           />
         </div>
       </div>

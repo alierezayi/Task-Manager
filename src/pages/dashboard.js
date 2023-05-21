@@ -1,7 +1,7 @@
+import { Fragment, useState } from "react";
+
 import Image from "next/image";
 import Head from "next/head";
-
-import { Fragment, useState } from "react";
 
 import { Tab } from "@headlessui/react";
 import { Bars3Icon } from "@heroicons/react/24/outline";
@@ -12,12 +12,16 @@ import Layout from "@/components/layout";
 
 import projectIcon from "../../public/images/task-square-svgrepo-com (3).svg";
 import teamIcon from "../../public/images/team-svgrepo-com (1).svg";
+import { useSelector } from "react-redux";
 
 export default function Dashboard() {
   //  join classNames
   const classNames = (...classes) => {
     return classes.filter(Boolean).join(" ");
   };
+
+  const authState = useSelector((state) => state.auth);
+  console.log(authState);
 
   // Handle open Sidebar
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -30,7 +34,6 @@ export default function Dashboard() {
 
   return (
     <>
-
       <Head>
         <title>داشبورد</title>
       </Head>
