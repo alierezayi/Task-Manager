@@ -7,5 +7,9 @@ export default function Home() {
   useEffect(() => {
     push("/register");
   }, []);
-  return <></>;
+  return (
+    <>
+      <div>Home Page</div>
+    </>
+  );
 }

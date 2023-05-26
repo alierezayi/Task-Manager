@@ -15,14 +15,6 @@ const authAPI = {
     const response = await axios.post(`${BASE_URL}/register`, userData);
     return response;
   },
-  // fetchUser: async (token) => {
-  //   const response = await axios.get(`${BASE_URL}/user`, {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   });
-  //   return response;
-  // },
 };
 
 export default authAPI;

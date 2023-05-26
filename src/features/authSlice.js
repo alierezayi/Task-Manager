@@ -4,20 +4,18 @@ import authAPI from "../services/authAPI";
 
 import Cookies from "js-cookie";
 
-const user = Cookies.get("user")
+const isLoggedIn = Cookies.get("user")
   ? JSON.parse(Cookies.get("user"))
   : {
       isAuthenticated: false,
       token: null,
     };
 
-// Define initial state for authSlice
 const initialState = {
   pending: false,
-  user,
+  ...isLoggedIn,
 };
 
-// Define async thunk to handle login process
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
@@ -30,7 +28,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// Define async thunk to handle register process
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, thunkAPI) => {
@@ -43,7 +40,6 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// Define async thunk to handle check OTP process
 export const checkOtpUser = createAsyncThunk(
   "auth/checkOtp",
   async (otp, thunkAPI) => {
@@ -56,13 +52,14 @@ export const checkOtpUser = createAsyncThunk(
   }
 );
 
-// Define authSlice using createSlice function
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     logoutUser: (state) => {
       state.pending = false;
+
+      state.isAuthenticated = false;
 
       Cookies.remove("user");
     },
@@ -78,13 +75,15 @@ const authSlice = createSlice({
         state.pending = false;
 
         // set user
-        state.user = { isAuthenticated: false, token: null };
+        state.isAuthenticated = false;
+        state.token = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.pending = false;
 
         // set user
-        state.user = { isAuthenticated: false, token: null };
+        state.isAuthenticated = false;
+        state.token = null;
       })
 
       // otp case
@@ -95,13 +94,15 @@ const authSlice = createSlice({
         state.pending = false;
 
         // set user
-        state.user = { isAuthenticated: false, token: null };
+        state.isAuthenticated = false;
+        state.token = null;
       })
       .addCase(checkOtpUser.rejected, (state, action) => {
         state.pending = false;
 
         // set user
-        state.user = { isAuthenticated: false, token: null };
+        state.isAuthenticated = false;
+        state.token = null;
       })
 
       // login case
@@ -112,24 +113,25 @@ const authSlice = createSlice({
         state.pending = false;
 
         // set user
+        state.isAuthenticated = true;
+        state.token = action.payload.accessToken;
+
+        // set cookie
         const user = {
           isAuthenticated: true,
           token: action.payload.accessToken,
         };
-        state.user = user;
-
-        // set cookie
         Cookies.set("user", JSON.stringify(user));
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.pending = false;
 
         // set user
-        state.user = { isAuthenticated: false, token: null };
+        state.isAuthenticated = false;
+        state.token = null;
       });
   },
 });
 
-// Export actions and reducer
-export const { setUser, setToken, logoutUser } = authSlice.actions;
+export const { logoutUser } = authSlice.actions;
 export default authSlice.reducer;

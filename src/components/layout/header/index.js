@@ -1,29 +1,46 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 
-import { Disclosure, Menu, Transition, Tab } from "@headlessui/react";
+import Image from "next/image";
+import logo from "../../../../public/next.svg";
+
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "@/features/userSlice";
+
+import { Disclosure, Menu, Transition } from "@headlessui/react";
+
 import {
   ArrowRightOnRectangleIcon,
-  BellIcon,
   XMarkIcon,
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
+import { logoutUser } from "@/features/authSlice";
+import Link from "next/link";
 
-export default function Example() {
-  const user = {
-    name: "Tom Cook",
-    email: "tom@example.com",
-    imageUrl:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-  };
+export default function Header() {
+  const dispatch = useDispatch();
+
+  const { token } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
+  console.log(token);
+  console.log(user);
+
+  useEffect(() => {
+    dispatch(fetchUser(token));
+  }, []);
+
   const navigation = [
     { name: "صفحه اصلی", href: "#", current: false },
     { name: "داشبورد", href: "#", current: true },
     { name: "درباره ما", href: "#", current: false },
   ];
   const userNavigation = [
-    { name: "پروفایل", href: "#" },
-    { name: "تنظیمات", href: "#" },
-    { name: "خروج حساب کاربری", href: "/logout" },
+    { name: "پروفایل", href: "/profile", disable: false },
+    { name: "تنظیمات", href: "", disable: true },
+    {
+      name: "خروج حساب کاربری",
+      func: () => dispatch(logoutUser()),
+      disable: false,
+    },
   ];
 
   function classNames(...classes) {
@@ -39,9 +56,11 @@ export default function Example() {
               <div className="flex h-16 items-center justify-between">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <img
+                    <Image
                       className="h-8 w-8"
-                      src="https://tailwindui.com/img/logos/mark.svg?color=blue&shade=500"
+                      width="32"
+                      height="32"
+                      src={logo}
                       alt="Your Company"
                     />
                   </div>
@@ -57,7 +76,6 @@ export default function Example() {
                               : "text-gray-400 hover:text-black",
                             "rounded-md px-3 py-2 text-sm font-medium"
                           )}
-                          aria-current={item.current ? "page" : undefined}
                         >
                           {item.name}
                         </a>
@@ -66,25 +84,26 @@ export default function Example() {
                   </div>
                 </div>
                 <div className="hidden md:block">
-                  <div className="ml-4 flex items-center md:ml-6">
-                    <button
-                      type="button"
-                      className="rounded-full p-1 text-gray-400 hover:text-black focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    >
-                      <span className="sr-only">View notifications</span>
-                      <BellIcon className="h-6 w-6" aria-hidden="true" />
-                    </button>
-
+                  <div className="flex items-center">
+                    <div>
+                      <span>{user.UserName}</span>
+                    </div>
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative mr-3">
                       <div>
                         <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                           <span className="sr-only">Open user menu</span>
-                          <img
-                            className="h-8 w-8 rounded-full"
-                            src={user.imageUrl}
-                            alt=""
-                          />
+                          {user.profile_image ? (
+                            <Image
+                              src={user.profile_image}
+                              className="h-8 w-8 rounded-full"
+                              width="auto"
+                              height="auto"
+                              alt="profile"
+                            />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-400 to-blue-500" />
+                          )}
                         </Menu.Button>
                       </div>
                       <Transition
@@ -98,33 +117,36 @@ export default function Example() {
                       >
                         <Menu.Items className="absolute left-0 z-10 mt-2 px-1 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           {userNavigation.map((item) =>
-                            item.href === "/logout" ? (
+                            item.func ? (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
-                                    href={item.href}
+                                  <button
+                                    onClick={item.func}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
-                                      "px-3 py-2 text-sm text-red-500 rounded-md flex items-center"
+                                      "px-3 py-2 text-sm text-red-500 rounded-md flex items-center w-full"
                                     )}
                                   >
-                                    <ArrowRightOnRectangleIcon className="w-5 h-5" />
+                                    <ArrowRightOnRectangleIcon className="w-5 h-5 ml-1" />
                                     <span>{item.name}</span>
-                                  </a>
+                                  </button>
                                 )}
                               </Menu.Item>
                             ) : (
                               <Menu.Item key={item.name}>
                                 {({ active }) => (
-                                  <a
+                                  <Link
                                     href={item.href}
                                     className={classNames(
                                       active ? "bg-gray-100" : "",
-                                      "block px-3 py-2 text-sm text-gray-700 rounded-md"
+                                      "block px-3 py-2 text-sm text-gray-700 rounded-md",
+                                      item.disable
+                                        ? " bg-transparent text-gray-300 cursor-not-allowed"
+                                        : ""
                                     )}
                                   >
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 )}
                               </Menu.Item>
                             )
@@ -134,6 +156,7 @@ export default function Example() {
                     </Menu>
                   </div>
                 </div>
+
                 <div className="-ml-2 flex md:hidden">
                   {/* Mobile menu button */}
                   <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-500 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-50">
@@ -171,41 +194,52 @@ export default function Example() {
                 ))}
               </div>
               <div className="border-t border-gray-300 pb-3 pt-4">
-                <div className="flex justify-end items-center px-5">
-                  <button
-                    type="button"
-                    className="ml-auto flex-shrink-0 rounded-full p-1 text-gray-400 hover:text-black focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                  >
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
-                  <div className="ml-3">
+                <div className="flex justify-start items-center px-5">
+                  <div className="ml-5">
+                    {user.profile_image ? (
+                      <Image
+                        src={user.profile_image}
+                        className="h-10 w-10 rounded-full"
+                        width="40"
+                        height="40"
+                        alt="profile"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-400 to-blue-500" />
+                    )}
+                  </div>
+                  <div className="ml-3 space-y-1">
                     <div className="text-base font-medium leading-none">
-                      {user.name}
+                      {user.FullName}
                     </div>
                     <div className="text-sm font-medium leading-none text-gray-400">
-                      {user.email}
+                      {user.Email}
                     </div>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <img
-                      className="h-10 w-10 rounded-full"
-                      src={user.imageUrl}
-                      alt=""
-                    />
                   </div>
                 </div>
                 <div className="mt-3 space-y-1 px-2">
-                  {userNavigation.map((item) => (
-                    <Disclosure.Button
-                      key={item.name}
-                      as="a"
-                      href={item.href}
-                      className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
-                    >
-                      {item.name}
-                    </Disclosure.Button>
-                  ))}
+                  {userNavigation.map((item) =>
+                    item.func ? (
+                      <Disclosure.Button
+                        key={item.name}
+                        as="a"
+                        onClick={item.func}
+                        className="rounded-md px-3 py-2 text-base font-medium flex text-red-400 hover:bg-gray-700 hover:text-white"
+                      >
+                        <ArrowRightOnRectangleIcon className="w-5 h-5 ml-1" />
+                        <span>{item.name}</span>{" "}
+                      </Disclosure.Button>
+                    ) : (
+                      <Disclosure.Button
+                        key={item.name}
+                        as="a"
+                        href={item.href}
+                        className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+                      >
+                        {item.name}
+                      </Disclosure.Button>
+                    )
+                  )}
                 </div>
               </div>
             </Disclosure.Panel>

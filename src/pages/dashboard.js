@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
 import Image from "next/image";
 import Head from "next/head";
@@ -13,6 +13,7 @@ import Layout from "@/components/layout";
 import projectIcon from "../../public/images/task-square-svgrepo-com (3).svg";
 import teamIcon from "../../public/images/team-svgrepo-com (1).svg";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 export default function Dashboard() {
   //  join classNames
@@ -20,8 +21,15 @@ export default function Dashboard() {
     return classes.filter(Boolean).join(" ");
   };
 
+  const router = useRouter();
+
   const authState = useSelector((state) => state.auth);
-  console.log(authState);
+
+  useEffect(() => {
+    if (!authState.isAuthenticated) {
+      router.push("/register");
+    }
+  }, [authState]);
 
   // Handle open Sidebar
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -119,12 +127,14 @@ export default function Dashboard() {
             {/* Content */}
             <div className="xl:w-5/6 lg:w-3/4 md:w-2/3 w-full h-screen overflow-auto bg-gray-100">
               {/* open Sidebar */}
-              <div
-                className="mx-1 my-2 flex items-center space-x-reverse space-x-3 md:hidden"
-                onClick={openSidebar}
-              >
-                <Bars3Icon className="block w-10 h-10 p-1 rounded hover:bg-slate-50 text-gray-600" />
-                <span className="text-gray-700">داشبورد</span>
+              <div>
+                <button
+                  className="mx-1 my-2 flex items-center space-x-reverse space-x-3 md:hidden w-32"
+                  onClick={openSidebar}
+                >
+                  <Bars3Icon className="block w-10 h-10 p-1 rounded hover:bg-slate-50 text-gray-600" />
+                  <span className="text-gray-700">داشبورد</span>
+                </button>
               </div>
 
               <Tab.Panels>

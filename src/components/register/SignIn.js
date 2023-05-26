@@ -7,7 +7,7 @@ import Notify from "../Notify";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { loginUser, setToken } from "@/features/authSlice";
+import { loginUser } from "@/features/authSlice";
 
 const SignIn = () => {
   const {
@@ -20,7 +20,7 @@ const SignIn = () => {
 
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
-  const { pending, user } = authState;
+  const { pending, isAuthenticated } = authState;
 
   const [PhoneNumber, setPhoneNumber] = useState("");
 
@@ -28,10 +28,10 @@ const SignIn = () => {
   const [otpResponse, setOtpResponse] = useState({});
 
   useEffect(() => {
-    if (user.isAuthenticated) {
+    if (isAuthenticated) {
       router.push("/dashboard");
     }
-  }, [user, router]);
+  }, [isAuthenticated, router]);
 
   const loginHanler = async (data) => {
     const credentials = { PhoneNumber, code: data.code };

@@ -37,12 +37,6 @@ export default function SignUp() {
     }
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/dashboard");
-    }
-  }, [isAuthenticated, router]);
-
   // handle show/hide pasword input
   const [showPassword, setShowPassword] = useState(false);
 
