@@ -8,11 +8,12 @@ import { Bars3Icon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
+import { toggleMinimize, closeSidebar } from "@/features/sidebarSlice";
+
 import projectIcon from "../../../public/images/task-square-svgrepo-com (3).svg";
 import newProjectIcon from "../../../public/images/add-note-svgrepo-com.svg";
 import newTeamIcon from "../../../public/images/user-add-svgrepo-com.svg";
 import teamIcon from "../../../public/images/team-svgrepo-com (1).svg";
-import { toggleMinimize } from "@/features/sidebarSlice";
 
 export default function Sidebar() {
   //  join classNames
@@ -75,6 +76,7 @@ export default function Sidebar() {
               {/* projects */}
               <Link
                 href="/projects"
+                onClick={() => dispatch(closeSidebar())}
                 className={classNames(
                   "w-full rounded-md py-2 font-medium flex items-center space-x-reverse space-x-2",
                   router.pathname === "/projects"
@@ -99,6 +101,7 @@ export default function Sidebar() {
               {/* new projects */}
               <Link
                 href="/new-project"
+                onClick={() => dispatch(closeSidebar())}
                 className={classNames(
                   "w-full rounded-md py-2 font-medium flex items-center space-x-reverse space-x-2",
                   router.pathname === "/new-project"
@@ -133,6 +136,7 @@ export default function Sidebar() {
               </h1>
               <Link
                 href="/teams"
+                onClick={() => dispatch(closeSidebar())}
                 className={classNames(
                   "w-full rounded-md py-2 font-medium flex items-center space-x-reverse space-x-2",
                   router.pathname === "/teams"
@@ -157,6 +161,7 @@ export default function Sidebar() {
               {/* new teams */}
               <Link
                 href="/new-team"
+                onClick={() => dispatch(closeSidebar())}
                 className={classNames(
                   "w-full rounded-md py-2 font-medium flex items-center space-x-reverse space-x-2",
                   router.pathname === "/new-team"

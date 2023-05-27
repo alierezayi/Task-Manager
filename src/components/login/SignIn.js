@@ -27,12 +27,6 @@ const SignIn = () => {
   const [loginResponse, setLoginResponse] = useState({});
   const [otpResponse, setOtpResponse] = useState({});
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/dashboard");
-    }
-  }, [isAuthenticated, router]);
-
   const loginHanler = async (data) => {
     const credentials = { PhoneNumber, code: data.code };
 
