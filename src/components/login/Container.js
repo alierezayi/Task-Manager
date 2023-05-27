@@ -7,7 +7,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function RegisterTab() {
+export default function Container() {
   return (
     <div className=" w-full max-w-md px-2 py-8 sm:px-0">
       <Tab.Group>

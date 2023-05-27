@@ -27,7 +27,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!authState.isAuthenticated) {
-      router.push("/register");
+      router.push("/");
     }
   }, [authState]);
 
