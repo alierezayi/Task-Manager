@@ -1,11 +1,27 @@
 import Head from "next/head";
 import Image from "next/image";
 
+import { useEffect } from "react";
+
+import { useRouter } from "next/router";
+
+import { useSelector } from "react-redux";
+
 import RegisterTab from "@/components/login/Container";
 
 import registerImage from "../../public/images/dl.beatsnoop.com-1683470923.png";
 
 export default function Login() {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/projects");
+    }
+  }, [isAuthenticated, router]);
+
   return (
     <>
       <Head>

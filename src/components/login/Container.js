@@ -8,16 +8,6 @@ function classNames(...classes) {
 }
 
 export default function Container() {
-  const { isAuthenticated } = useSelector((state) => state.auth);
-
-  const router = useRouter();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.push("/dashboard");
-    }
-  }, [isAuthenticated, router]);
-
   return (
     <div className=" w-full max-w-md px-2 py-8 sm:px-0">
       <Tab.Group>

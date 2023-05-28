@@ -74,18 +74,18 @@ export default function Header() {
                     {/* Profile dropdown */}
                     <Menu as="div" className="relative mr-3">
                       <div>
-                        <Menu.Button className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                        <Menu.Button className="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                           <span className="sr-only">Open user menu</span>
                           {user.profile_image ? (
                             <Image
                               src={user.profile_image}
-                              className="h-8 w-8 rounded-full"
+                              className="h-9 w-9 rounded-full"
                               width="auto"
                               height="auto"
                               alt="profile"
                             />
                           ) : (
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-400 to-blue-500" />
+                            <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-400 to-blue-500" />
                           )}
                         </Menu.Button>
                       </div>
