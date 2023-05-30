@@ -13,6 +13,11 @@ const isLoggedIn = Cookies.get("user")
 
 const initialState = {
   pending: false,
+  response: {
+    register: {},
+    otp: {},
+    login: {},
+  },
   ...isLoggedIn,
 };
 
@@ -63,6 +68,9 @@ const authSlice = createSlice({
 
       Cookies.remove("user");
     },
+    setPhoneNumber: (state, action) => {
+      state.PhoneNumber = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -74,12 +82,20 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.pending = false;
 
+        state.response.register = action.payload;
+        state.response.otp = {};
+        state.response.login = {};
+
         // set user
         state.isAuthenticated = false;
         state.token = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.pending = false;
+
+        state.response.register = action.payload;
+        state.response.otp = {};
+        state.response.login = {};
 
         // set user
         state.isAuthenticated = false;
@@ -93,12 +109,20 @@ const authSlice = createSlice({
       .addCase(checkOtpUser.fulfilled, (state, action) => {
         state.pending = false;
 
+        state.response.otp = action.payload;
+        state.response.register = {};
+        state.response.login = {};
+
         // set user
         state.isAuthenticated = false;
         state.token = null;
       })
       .addCase(checkOtpUser.rejected, (state, action) => {
         state.pending = false;
+
+        state.response.otp = action.payload;
+        state.response.register = {};
+        state.response.login = {};
 
         // set user
         state.isAuthenticated = false;
@@ -116,6 +140,10 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.token = action.payload.accessToken;
 
+        state.response.login = action.payload;
+        state.response.register = {};
+        state.response.otp = {};
+
         // set cookie
         const user = {
           isAuthenticated: true,
@@ -126,6 +154,10 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.pending = false;
 
+        state.response.login = action.payload;
+        state.response.register = {};
+        state.response.otp = {};
+
         // set user
         state.isAuthenticated = false;
         state.token = null;
@@ -133,5 +165,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logoutUser } = authSlice.actions;
+export const { logoutUser, setPhoneNumber } = authSlice.actions;
 export default authSlice.reducer;

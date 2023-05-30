@@ -1,104 +1,171 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
 
-import CheckOtp from "./CheckOtp";
 import Notify from "../Notify";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { loginUser } from "@/features/authSlice";
+import { loginUser, checkOtpUser } from "@/features/authSlice";
 
 const SignIn = () => {
   const {
-    register,
-    handleSubmit,
-    formState: { errors },
+    register: loginRegister,
+    handleSubmit: handleLogin,
+    formState: { errors: loginErrors },
   } = useForm();
 
-  const router = useRouter();
+  const {
+    register: otpRegister,
+    handleSubmit: handleOtp,
+    formState: { errors: otpErrors },
+  } = useForm();
 
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth);
-  const { pending, isAuthenticated } = authState;
-
-  const [PhoneNumber, setPhoneNumber] = useState("");
-
-  const [loginResponse, setLoginResponse] = useState({});
-  const [otpResponse, setOtpResponse] = useState({});
-
-  const loginHanler = async (data) => {
-    const credentials = { PhoneNumber, code: data.code };
-
-    const response = await dispatch(loginUser(credentials));
-
-    setLoginResponse(response.payload);
-  };
+  const {
+    pending,
+    response: { otp, login },
+  } = authState;
 
   console.log(authState);
 
+  const [PhoneNumber, setPhoneNumber] = useState("");
+
+  const submitOtp = (data) => {
+    dispatch(checkOtpUser(data));
+
+    setPhoneNumber(data.PhoneNumber);
+  };
+
+  const submitLogin = (data) => {
+    const credentials = { PhoneNumber, code: data.code };
+
+    dispatch(loginUser(credentials));
+  };
+
+  const handleMessageType = () => {
+    if (otp?.success && otp?.message) {
+      return "success";
+    }
+    if (!otp?.success && otp?.message) {
+      return "error";
+    }
+    if (login?.success && login?.message) {
+      return "success";
+    }
+    if (!login?.success && login?.message) {
+      return "error";
+    }
+    return "success";
+  };
+
+  const showNotify = () => {
+    if (otp.message || login.message) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleMessage = () => {
+    if (otp?.message) {
+      return otp.message;
+    }
+    if (login?.message) {
+      return login.message;
+    }
+    return "";
+  };
+
+  const notifyMessage = handleMessage();
+
+  const messageType = handleMessageType();
+
+  const isShowNotify = showNotify();
+
   return (
     <>
-      <CheckOtp
-        response={otpResponse}
-        setPhoneNumber={setPhoneNumber}
-        setResponse={setOtpResponse}
-      />
       <form
-        onSubmit={handleSubmit(loginHanler)}
+        onSubmit={handleOtp(submitOtp)}
+        className="flex flex-col md:px-6 mt-4"
+      >
+        <label className="text-gray-700 mb-5 text-sm">
+          لطفا شماره موبایل خود را وارد کنید
+        </label>
+        <div className="relative">
+          <input
+            type="number"
+            id="PhoneNumber"
+            {...otpRegister("PhoneNumber", { required: true })}
+            className={`block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+              otpErrors.PhoneNumber
+                ? "focus:border-rose-600"
+                : "focus:border-blue-600"
+            }`}
+            placeholder=" "
+          />
+          <label
+            htmlFor="PhoneNumber"
+            className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+              otpErrors.PhoneNumber
+                ? "peer-focus:text-rose-600"
+                : "peer-focus:text-blue-600"
+            } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
+          >
+            شماره موبایل
+          </label>
+        </div>
+        <span className="text-red-500 mr-1 text-xs mt-1">
+          {otpErrors.PhoneNumber && "این قسمت نمی تواند خالی باشد"}
+        </span>
+
+        <div className="my-1 flex justify-end">
+          <button
+            type="submit"
+            className="text-blue-600 hover:text-blue-500 disabled:text-blue-300 text-start text-sm px-3"
+            disabled={otp.success}
+          >
+            ارسال کد تایید
+          </button>
+        </div>
+      </form>
+
+      <form
+        onSubmit={handleLogin(submitLogin)}
         className="flex flex-col md:px-6 mt-2"
       >
         <div className="relative">
           <input
             type="number"
             id="code"
-            {...register("code", { required: true })}
-            className="block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+            {...loginRegister("code", { required: true })}
+            className={`block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+              loginErrors.code
+                ? "focus:border-rose-600"
+                : "focus:border-blue-600"
+            }`}
             placeholder=" "
           />
           <label
             htmlFor="code"
-            className="absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+            className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+              otpErrors.PhoneNumber
+                ? "peer-focus:text-rose-600"
+                : "peer-focus:text-blue-600"
+            } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
           >
             کد تایید
           </label>
         </div>
         <span className="text-red-500 mr-1 text-xs mt-1">
-          {errors.code && "کد تایید را وارد نکرده اید"}
+          {loginErrors.code && "کد تایید را وارد نکرده اید"}
         </span>
-
-        {/* show message */}
-        {otpResponse.message && otpResponse.success ? (
-          <span className="mt-5">
-            <Notify message={otpResponse.message} type="success" />
-          </span>
-        ) : (
-          otpResponse.message &&
-          !otpResponse.success && (
-            <span className="mt-5">
-              <Notify message={otpResponse.message} type="error" />
-            </span>
-          )
-        )}
-        {loginResponse.message && loginResponse.success ? (
-          <span className="mt-5">
-            <Notify message={loginResponse.message} type="success" />
-          </span>
-        ) : (
-          loginResponse.message &&
-          !loginResponse.success && (
-            <span className="mt-5">
-              <Notify message={loginResponse.message} type="error" />
-            </span>
-          )
-        )}
 
         <button
           type="submit"
           className="bg-blue-600 text-white py-3 rounded-xl active:transform active:scale-[.98] hover:bg-blue-700 transition mt-7"
-          disabled={pending && loginResponse.success}
+          disabled={pending}
         >
-          {pending && loginResponse.success ? (
+          {pending ? (
             <div className="flex items-center justify-center space-x-reverse space-x-3">
               <Spinner />
               <span>در حال پردازش. . .</span>
@@ -107,6 +174,15 @@ const SignIn = () => {
             "ورود به حساب کاربری"
           )}
         </button>
+
+        {/* show message */}
+        <span className="mt-8">
+          <Notify
+            toShow={isShowNotify}
+            message={notifyMessage}
+            type={messageType}
+          />
+        </span>
       </form>
     </>
   );

@@ -55,7 +55,7 @@ export default function Header() {
 
   return (
     <>
-      <Disclosure as="nav" className="bg-white border-b border-b-slate-100">
+      <Disclosure as="nav" className="bg-white/80 backdrop-blur border-b border-b-slate-100 sticky top-0 z-10">
         {({ open }) => (
           <>
             <div className="px-4 sm:px-6 lg:px-8">

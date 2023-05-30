@@ -19,6 +19,17 @@ export const fetchUser = createAsyncThunk(
     }
   }
 );
+// export const setProfileImage = createAsyncThunk(
+//   "user/setProfileImage",
+//   async (token, image, { rejectWithValue }) => {
+//     try {
+//       const response = await userAPI.setProfileImage(token, image);
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response.data);
+//     }
+//   }
+// );
 
 const userSlice = createSlice({
   name: "user",
@@ -38,7 +49,7 @@ const userSlice = createSlice({
         state.pending = false;
 
         state.error = action.error;
-      });
+      })
   },
 });
 

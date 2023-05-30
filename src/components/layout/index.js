@@ -6,8 +6,11 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 
 import { closeSidebar } from "@/features/sidebarSlice";
+import { useRouter } from "next/router";
 
 const Layout = ({ children }) => {
+  const router = useRouter();
+
   const { sidebarOpen } = useSelector((state) => state.sidebar);
 
   const authState = useSelector((state) => state.auth);

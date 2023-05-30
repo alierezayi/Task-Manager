@@ -23,19 +23,46 @@ export default function SignUp() {
   const router = useRouter();
 
   const dispatch = useDispatch();
-  const { pending, isAuthenticated } = useSelector((state) => state.auth);
+  const {
+    pending,
+    response: { register: response },
+  } = useSelector((state) => state.auth);
 
-  const [response, setResponse] = useState({});
+  const submitRegister = async (data) => {
+    dispatch(registerUser(data));
 
-  const onSubmit = async (data) => {
-    const response = await dispatch(registerUser(data));
-
-    setResponse(response.payload);
-
-    if (response.payload.success) {
       reset();
-    }
   };
+
+  const handleMessageType = () => {
+    if (response?.success && response?.message) {
+      return "success";
+    }
+    if (!response?.success && response?.message) {
+      return "error";
+    }
+    return "success";
+  };
+
+  const showNotify = () => {
+    if (response.message) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleMessage = () => {
+    if (response?.message) {
+      return response.message;
+    }
+    return "";
+  };
+
+  const notifyMessage = handleMessage();
+
+  const messageType = handleMessageType();
+
+  const isShowNotify = showNotify();
 
   // handle show/hide pasword input
   const [showPassword, setShowPassword] = useState(false);
@@ -49,7 +76,10 @@ export default function SignUp() {
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:px-6">
+      <form
+        onSubmit={handleSubmit(submitRegister)}
+        className="flex flex-col md:px-6 mt-4"
+      >
         <div className="grid grid-cols-4 gap-y-0.5 gap-x-8 mb-1">
           {/* full name */}
           <div className="col-span-2">
@@ -279,20 +309,6 @@ export default function SignUp() {
           </div>
         </div>
 
-        {/* show message */}
-        {response.message && response.success ? (
-          <span className="mb-5">
-            <Notify message={response.message} type="success" />
-          </span>
-        ) : (
-          response.message &&
-          !response.success && (
-            <span className="mb-5">
-              <Notify message={response.message} type="error" />
-            </span>
-          )
-        )}
-
         {/* submit */}
         <button
           type="submit"
@@ -308,6 +324,15 @@ export default function SignUp() {
             "ایجاد حساب کاربری"
           )}
         </button>
+
+        {/* show message */}
+        <span className="mt-7">
+          <Notify
+            toShow={isShowNotify}
+            message={notifyMessage}
+            type={messageType}
+          />
+        </span>
       </form>
     </>
   );
