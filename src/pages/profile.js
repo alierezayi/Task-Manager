@@ -18,7 +18,7 @@ const Profile = () => {
   const { user, profileImg } = useSelector((state) => state.user);
   const { token } = useSelector((state) => state.auth);
 
-  // console.log(profileImg);
+  // console.log(token);
 
   const dispatch = useDispatch();
 
@@ -29,34 +29,31 @@ const Profile = () => {
     formState: { errors },
   } = useForm();
 
-  const [selectedFile, setSelectedFile] = useState(false);
+  const [image, setImage] = useState({});
 
   const fileChangeHandler = (e) => {
-    if (e.target.files[0]) {
-      setSelectedFile(true);
-    }
+    setImage(e.target.files[0]);
     console.log(e.target.files[0]);
   };
 
   const handleUploadImage = async (data) => {
-    setSelectedFile(false);
+    // setImage(false);
 
     const formData = new FormData();
-    formData.append("image", data.file);
+    formData.append("image", image);
 
-    console.log(...formData);
+    console.log(formData.get("image"));
+    console.log(data.image);
 
     // dispatch(uploadImage(token, formData));
 
-    axios({
-      method: "post",
-      url: "http://127.0.0.1:3000/user/profile-image",
-      data: formData.image,
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    })
+    axios
+      .post("http://127.0.0.1:3000/user/profile-image", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((response) => console.log(response))
       .catch((error) => console.log(error.response));
 
@@ -64,7 +61,7 @@ const Profile = () => {
   };
 
   const closeCaption = () => {
-    setSelectedFile(false);
+    setImage(false);
 
     reset();
   };
@@ -80,10 +77,11 @@ const Profile = () => {
           <div className="w-full min-h-[288px] h-[40vh] max-h-[300px] bg-gradient-to-r from-blue-400 to-fuchsia-500 rounded-b-3xl md:rounded-b-[30px]"></div>
           {user.profile_image ? (
             <Image
+              loader={() => user.profile_image}
               src={user.profile_image}
-              className="w-56 h-56 md:w-64 md:h-64 rounded-full border-2 mx-auto -mt-[118px] md:-mt-[118px]"
-              width="auto"
-              height="auto"
+              className="w-56 h-56 md:w-62 md:h-62 bg-slate-400 rounded-full mx-auto -mt-[118px] md:-mt-[118px]"
+              width={224}
+              height={224}
               alt="profile"
             />
           ) : (
@@ -99,7 +97,7 @@ const Profile = () => {
                   id="upload_file"
                   type="file"
                   accept="image/*"
-                  {...register("file")}
+                  {...register("image", { required: true })}
                   onChange={fileChangeHandler}
                   className="absolute opacity-0"
                 />
@@ -110,7 +108,7 @@ const Profile = () => {
             </div>
           )}
 
-          {selectedFile ? (
+          {image ? (
             <div className="flex items-center justify-center text-black mt-8 mb-4 mx-auto">
               <div className="flex items-center justify-center border bg-white border-slate-300 py-3 px-4 rounded-xl">
                 <p>آیا عکس انتخاب شده به عنوان پروفایل تنظیم گردد؟</p>

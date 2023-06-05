@@ -68,10 +68,10 @@ const SignIn = () => {
 
   const handleMessage = () => {
     if (otp?.message) {
-      return otp.message;
+      return otp?.message;
     }
     if (login?.message) {
-      return login.message;
+      return login?.message;
     }
     return "";
   };
@@ -81,6 +81,7 @@ const SignIn = () => {
   const messageType = handleMessageType();
 
   const isShowNotify = showNotify();
+  
 
   return (
     <>
@@ -88,13 +89,6 @@ const SignIn = () => {
         onSubmit={handleOtp(submitOtp)}
         className="flex flex-col md:px-6 mt-4"
       >
-        <span className="mb-5">
-          <Notify
-            toShow={isShowNotify}
-            message={notifyMessage}
-            type={messageType}
-          />
-        </span>
         <label className="text-gray-700 mb-5 text-sm">
           لطفا شماره موبایل خود را وارد کنید
         </label>
@@ -129,7 +123,7 @@ const SignIn = () => {
           <button
             type="submit"
             className="text-blue-600 hover:text-blue-500 disabled:text-blue-300 text-start text-sm px-3"
-            disabled={otp.success}
+            disabled={otp?.success}
           >
             ارسال کد تایید
           </button>
@@ -183,6 +177,13 @@ const SignIn = () => {
         </button>
 
         {/* show message */}
+        <span className="mt-7">
+          <Notify
+            toShow={isShowNotify}
+            message={notifyMessage}
+            type={messageType}
+          />
+        </span>
       </form>
     </>
   );

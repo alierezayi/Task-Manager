@@ -53,7 +53,7 @@ export default function SignUp() {
 
   const handleMessage = () => {
     if (response?.message) {
-      return response.message;
+      return response?.message;
     }
     return "";
   };
@@ -80,14 +80,6 @@ export default function SignUp() {
         onSubmit={handleSubmit(submitRegister)}
         className="flex flex-col md:px-6 mt-4"
       >
-        {/* show message */}
-        <span className="mb-7">
-          <Notify
-            toShow={isShowNotify}
-            message={notifyMessage}
-            type={messageType}
-          />
-        </span>
         <div className="grid grid-cols-4 gap-y-0.5 gap-x-8 mb-1">
           {/* full name */}
           <div className="col-span-2">
@@ -332,6 +324,14 @@ export default function SignUp() {
             "ایجاد حساب کاربری"
           )}
         </button>
+        {/* show message */}
+        <span className="mt-7">
+          <Notify
+            toShow={isShowNotify}
+            message={notifyMessage}
+            type={messageType}
+          />
+        </span>
       </form>
     </>
   );
