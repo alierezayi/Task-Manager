@@ -15,6 +15,8 @@ const Layout = ({ children }) => {
 
   const authState = useSelector((state) => state.auth);
 
+  // console.log(authState.token);
+
   const dispatch = useDispatch();
 
   useEffect(() => {

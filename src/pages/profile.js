@@ -1,48 +1,72 @@
-import Layout from "@/components/layout";
+import React, { useState } from "react";
+
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import Head from "next/head";
+
 import { useDispatch, useSelector } from "react-redux";
 
+import { useForm } from "react-hook-form";
+
+import Layout from "@/components/layout";
+
 import { ShareIcon, CameraIcon } from "@heroicons/react/24/outline";
-import Head from "next/head";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import userAPI from "@/services/userAPI";
+import { uploadImage } from "@/features/userSlice";
+import axios from "axios";
 
 const Profile = () => {
-  const { user } = useSelector((state) => state.user);
+  const { user, profileImg } = useSelector((state) => state.user);
   const { token } = useSelector((state) => state.auth);
 
-  console.log(token);
+  // console.log(profileImg);
+
+  const dispatch = useDispatch();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const [fileExisted, setFileExisted] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(false);
 
   const fileChangeHandler = (e) => {
     if (e.target.files[0]) {
-      setFileExisted(true);
+      setSelectedFile(true);
     }
     console.log(e.target.files[0]);
   };
 
   const handleUploadImage = async (data) => {
-    console.log(data.file[0]);
-    const formData = new FormData();
-    formData.append("file", data.file[0]);
+    setSelectedFile(false);
 
-    try {
-      const response = await userAPI.setProfileImage(token, data.file[0]);
-      console.log(response.data);
-    } catch (error) {
-      console.log(error);
-      return;
-    }
+    const formData = new FormData();
+    formData.append("image", data.file);
+
+    console.log(...formData);
+
+    // dispatch(uploadImage(token, formData));
+
+    axios({
+      method: "post",
+      url: "http://127.0.0.1:3000/user/profile-image",
+      data: formData.image,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error.response));
+
+    reset();
+  };
+
+  const closeCaption = () => {
+    setSelectedFile(false);
+
+    reset();
   };
 
   return (
@@ -53,18 +77,18 @@ const Profile = () => {
 
       <Layout>
         <form onSubmit={handleSubmit(handleUploadImage)}>
-          <div className="w-full h-72 bg-gradient-to-r from-rose-500 to-blue-500 rounded-b-2xl"></div>
+          <div className="w-full min-h-[288px] h-[40vh] max-h-[300px] bg-gradient-to-r from-blue-400 to-fuchsia-500 rounded-b-3xl md:rounded-b-[30px]"></div>
           {user.profile_image ? (
             <Image
               src={user.profile_image}
-              className="w-56 h-56 rounded-full border-2 mx-auto -mt-[118px] md:-mt-[125px]"
+              className="w-56 h-56 md:w-64 md:h-64 rounded-full border-2 mx-auto -mt-[118px] md:-mt-[118px]"
               width="auto"
               height="auto"
               alt="profile"
             />
           ) : (
             <div>
-              <div className="w-56 h-56 border-2 rounded-full bg-slate-400 mx-auto -mt-[118px] md:-mt-[125px] flex justify-center items-center relative">
+              <div className="w-56 h-56 md:w-62 md:h-62 rounded-full bg-slate-400 mx-auto -mt-[118px] md:-mt-[118px] flex justify-center items-center relative">
                 <label
                   htmlFor="upload_file"
                   className="absolute bottom-[17px] right-[17px] bg-slate-200/20 backdrop-blur text-gray-600 rounded-full p-1.5 cursor-pointer"
@@ -74,6 +98,7 @@ const Profile = () => {
                 <input
                   id="upload_file"
                   type="file"
+                  accept="image/*"
                   {...register("file")}
                   onChange={fileChangeHandler}
                   className="absolute opacity-0"
@@ -85,28 +110,29 @@ const Profile = () => {
             </div>
           )}
 
-          <div className="w-full flex flex-col items-center justify-center">
-            {fileExisted ? (
-              <div className="flex space-x-reverse space-x-5">
+          {selectedFile ? (
+            <div className="flex items-center justify-center text-black mt-8 mb-4 mx-auto">
+              <div className="flex items-center justify-center border bg-white border-slate-300 py-3 px-4 rounded-xl">
+                <p>آیا عکس انتخاب شده به عنوان پروفایل تنظیم گردد؟</p>
                 <button
                   type="button"
-                  className="p-2 rounded-full text-rose-500 bg-slate-200"
-                  onClick={() => setFileExisted(false)}
+                  onClick={closeCaption}
+                  className="px-2 hover:text-rose-500"
                 >
-                  <XMarkIcon className="block w-6 h-6" />
+                  خیر
                 </button>
-                <button
-                  type="submit"
-                  className="p-2 rounded-full text-blue-500 bg-slate-200"
-                >
-                  <CheckIcon className="block w-6 h-6" />
+                <button type="submit" className="px-2 hover:text-blue-500">
+                  بله
                 </button>
               </div>
-            ) : null}
+            </div>
+          ) : null}
+
+          <div className="w-full flex flex-col items-center justify-center">
             <span className="text-3xl my-4">{user.FullName}</span>
             <div className="space-x-reverse space-x-2 flex items-center justify-center text-lg">
               <span>{user.Email}</span>
-              <span className="w-2 h-2 bg-slate-300 rounded-full"></span>
+              <span className="w-2 h-2 bg-slate-300 rounded-full" />
               <span>{user.UserName}</span>
             </div>
             <div className="text-xs mt-2 text-gray-500">
@@ -120,7 +146,10 @@ const Profile = () => {
               >
                 ویرایش پروفایل
               </Link>
-              <button className="border border-slate-500 transition hover:border-black hover:text-black text-slate-500 mr-2 p-2.5 rounded-lg">
+              <button
+                type="button"
+                className="border border-slate-500 transition hover:border-black hover:text-black text-slate-500 mr-2 p-2.5 rounded-lg"
+              >
                 <ShareIcon className="block w-6 h-6" />
               </button>
             </div>

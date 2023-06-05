@@ -4,8 +4,8 @@ import userAPI from "@/services/userAPI";
 
 const initialState = {
   pending: false,
+  profileImg: {},
   user: {},
-  error: {},
 };
 
 export const fetchUser = createAsyncThunk(
@@ -19,17 +19,17 @@ export const fetchUser = createAsyncThunk(
     }
   }
 );
-// export const setProfileImage = createAsyncThunk(
-//   "user/setProfileImage",
-//   async (token, image, { rejectWithValue }) => {
-//     try {
-//       const response = await userAPI.setProfileImage(token, image);
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response.data);
-//     }
-//   }
-// );
+export const uploadImage = createAsyncThunk(
+  "user/uploadImage",
+  async (token, image) => {
+    try {
+      const response = await userAPI.setProfileImage(token, image);
+      return response.data;
+    } catch (error) {
+      return error.response.data;
+    }
+  }
+);
 
 const userSlice = createSlice({
   name: "user",
@@ -47,9 +47,20 @@ const userSlice = createSlice({
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.pending = false;
-
-        state.error = action.error;
       })
+      .addCase(uploadImage.pending, (state) => {
+        state.pending = true;
+      })
+      .addCase(uploadImage.fulfilled, (state, action) => {
+        state.pending = false;
+
+        state.profileImg = action.payload;
+      })
+      .addCase(uploadImage.rejected, (state, action) => {
+        state.pending = false;
+
+        state.profileImg = action.payload;
+      });
   },
 });
 

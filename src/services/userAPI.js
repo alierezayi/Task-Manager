@@ -20,12 +20,13 @@ const userAPI = {
     });
     return response;
   },
-  setProfileImage: async (token, file) => {
-    const response = await axios.post(`${BASE_URL}/profile-image`, {
+  setProfileImage: async (token, image) => {
+    console.log(image);
+    const response = await axios.post(`${BASE_URL}/profile-image`, image, {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": image.type,
       },
-      body: file
     });
     return response;
   },

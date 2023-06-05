@@ -77,7 +77,7 @@ export default function Header() {
                         <Menu.Button className="flex max-w-xs items-center rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                           <span className="sr-only">Open user menu</span>
                           {user.profile_image ? (
-                            <Image
+                            <img
                               src={user.profile_image}
                               className="h-9 w-9 rounded-full"
                               width="auto"
@@ -102,7 +102,7 @@ export default function Header() {
                           <div className="flex flex-col items-center justify-center my-3 space-y-1">
                             <div>
                               {user.profile_image ? (
-                                <Image
+                                <img
                                   src={user.profile_image}
                                   className="h-14 w-14 rounded-full"
                                   width="auto"
@@ -165,7 +165,7 @@ export default function Header() {
                     {open ? (
                       <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
                     ) : user.profile_image ? (
-                      <Image
+                      <img
                         src={user.profile_image}
                         className="h-8 w-8 rounded-full"
                         width="auto"
@@ -185,7 +185,7 @@ export default function Header() {
                 <div className="flex justify-start items-center px-5">
                   <div className="ml-5">
                     {user.profile_image ? (
-                      <Image
+                      <img
                         src={user.profile_image}
                         className="h-10 w-10 rounded-full"
                         width="40"

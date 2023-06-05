@@ -60,7 +60,7 @@ const SignIn = () => {
   };
 
   const showNotify = () => {
-    if (otp.message || login.message) {
+    if (otp?.message || login?.message) {
       return true;
     }
     return false;
@@ -88,6 +88,13 @@ const SignIn = () => {
         onSubmit={handleOtp(submitOtp)}
         className="flex flex-col md:px-6 mt-4"
       >
+        <span className="mb-5">
+          <Notify
+            toShow={isShowNotify}
+            message={notifyMessage}
+            type={messageType}
+          />
+        </span>
         <label className="text-gray-700 mb-5 text-sm">
           لطفا شماره موبایل خود را وارد کنید
         </label>
@@ -176,13 +183,6 @@ const SignIn = () => {
         </button>
 
         {/* show message */}
-        <span className="mt-8">
-          <Notify
-            toShow={isShowNotify}
-            message={notifyMessage}
-            type={messageType}
-          />
-        </span>
       </form>
     </>
   );

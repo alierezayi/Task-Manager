@@ -17,7 +17,7 @@ const Notify = ({ toShow, message, type }) => {
         "p-4 text-sm  rounded-lg items-center space-x-reverse space-x-3",
         type === "success"
           ? "text-blue-700 bg-blue-50 border border-blue-200"
-          : type() === "error" &&
+          : type === "error" &&
               "text-rose-700 border border-rose-200 bg-red-50",
         toShow ? "flex" : "hidden"
       )}
