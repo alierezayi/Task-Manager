@@ -12,20 +12,19 @@ const userAPI = {
     return response;
   },
   editProfile: async (token, updatedData) => {
-    const response = await axios.post(`${BASE_URL}/edit-profile`, {
+    const response = await axios.post(`${BASE_URL}/edit-profile`, updatedData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: updatedData,
     });
     return response;
   },
-  setProfileImage: async (token, image) => {
-    console.log(image);
-    const response = await axios.post(`${BASE_URL}/profile-image`, image, {
+  setProfileImage: async (token, formData) => {
+    console.log(formData);
+    const response = await axios.post(`${BASE_URL}/profile-image`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": image.type,
+        "Content-Type": "multipart/form-data",
       },
     });
     return response;

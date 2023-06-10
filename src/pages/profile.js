@@ -4,67 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 
-import { useDispatch, useSelector } from "react-redux";
-
-import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 import Layout from "@/components/layout";
 
-import { ShareIcon, CameraIcon } from "@heroicons/react/24/outline";
-import { uploadImage } from "@/features/userSlice";
-import axios from "axios";
-
 const Profile = () => {
-  const { user, profileImg } = useSelector((state) => state.user);
-  const { token } = useSelector((state) => state.auth);
-
-  // console.log(token);
-
-  const dispatch = useDispatch();
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
-
-  const [image, setImage] = useState({});
-
-  const fileChangeHandler = (e) => {
-    setImage(e.target.files[0]);
-    console.log(e.target.files[0]);
-  };
-
-  const handleUploadImage = async (data) => {
-    // setImage(false);
-
-    const formData = new FormData();
-    formData.append("image", image);
-
-    console.log(formData.get("image"));
-    console.log(data.image);
-
-    // dispatch(uploadImage(token, formData));
-
-    axios
-      .post("http://127.0.0.1:3000/user/profile-image", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error.response));
-
-    reset();
-  };
-
-  const closeCaption = () => {
-    setImage(false);
-
-    reset();
-  };
+  const { user } = useSelector((state) => state.user);
 
   return (
     <>
@@ -73,34 +18,20 @@ const Profile = () => {
       </Head>
 
       <Layout>
-        <form onSubmit={handleSubmit(handleUploadImage)}>
-          <div className="w-full min-h-[288px] h-[40vh] max-h-[300px] bg-gradient-to-r from-blue-400 to-fuchsia-500 rounded-b-3xl md:rounded-b-[30px]"></div>
+        <div className="w-full h-[200px] sm:h-[250px] md:h-[300px] bg-gradient-to-r from-blue-400 to-fuchsia-500 rounded-b-3xl md:rounded-b-[30px]" />
+        <div className="sm:max-w-5xl md:w-[70%] mx-auto">
           {user.profile_image ? (
             <Image
               loader={() => user.profile_image}
               src={user.profile_image}
-              className="w-56 h-56 md:w-62 md:h-62 bg-slate-400 rounded-full mx-auto -mt-[118px] md:-mt-[118px]"
+              className="w-56 h-56 md:w-62 md:h-62 bg-slate-400 rounded-full mx-auto md:mr-0 -mt-[118px] md:-mt-[118px]"
               width={224}
               height={224}
               alt="profile"
             />
           ) : (
             <div>
-              <div className="w-56 h-56 md:w-62 md:h-62 rounded-full bg-slate-400 mx-auto -mt-[118px] md:-mt-[118px] flex justify-center items-center relative">
-                <label
-                  htmlFor="upload_file"
-                  className="absolute bottom-[17px] right-[17px] bg-slate-200/20 backdrop-blur text-gray-600 rounded-full p-1.5 cursor-pointer"
-                >
-                  <CameraIcon className="block w-6 h-6" />
-                </label>
-                <input
-                  id="upload_file"
-                  type="file"
-                  accept="image/*"
-                  {...register("image", { required: true })}
-                  onChange={fileChangeHandler}
-                  className="absolute opacity-0"
-                />
+              <div className="w-56 h-56 md:w-62 md:h-62 rounded-full bg-slate-400 mx-auto md:mr-0 -mt-[118px] md:-mt-[118px] flex justify-center items-center">
                 <span className="text-white text-7xl">
                   {user.FullName ? user.FullName.charAt(0) : ""}
                 </span>
@@ -108,51 +39,82 @@ const Profile = () => {
             </div>
           )}
 
-          {image ? (
-            <div className="flex items-center justify-center text-black mt-8 mb-4 mx-auto">
-              <div className="flex items-center justify-center border bg-white border-slate-300 py-3 px-4 rounded-xl">
-                <p>آیا عکس انتخاب شده به عنوان پروفایل تنظیم گردد؟</p>
-                <button
-                  type="button"
-                  onClick={closeCaption}
-                  className="px-2 hover:text-rose-500"
-                >
-                  خیر
-                </button>
-                <button type="submit" className="px-2 hover:text-blue-500">
-                  بله
-                </button>
-              </div>
+          <div className="px-10">
+            <div className="flex flex-col items-center md:items-start">
+              <h1 className="text-2xl mt-4 mb-2">{user.FullName}</h1>
+              <div className="text-xs mt-2 text-gray-500">
+                <span className="mr-1">Date Created:</span>
+                <span>{user.createdAt}</span>
+              </div>{" "}
             </div>
-          ) : null}
 
-          <div className="w-full flex flex-col items-center justify-center">
-            <span className="text-3xl my-4">{user.FullName}</span>
-            <div className="space-x-reverse space-x-2 flex items-center justify-center text-lg">
-              <span>{user.Email}</span>
-              <span className="w-2 h-2 bg-slate-300 rounded-full" />
-              <span>{user.UserName}</span>
-            </div>
-            <div className="text-xs mt-2 text-gray-500">
-              <span className="mr-1">Date Created:</span>
-              <span>{user.createdAt}</span>
+            <div className="mt-12">
+              <h3 className=" text-blue-500 mb-4">اطلاعات حساب کاربری</h3>
+
+              <div className="divide-y">
+                <div className="flex flex-col py-3">
+                  <span>{user.UserName}</span>
+                  <span className="text-sm text-gray-400">نام کاربری</span>
+                </div>
+
+                <div className="flex flex-col py-3">
+                  <span>{user.PhoneNumber}</span>
+                  <span className="text-sm text-gray-400">شماره تلفن</span>
+                </div>
+
+                <div className="flex flex-col py-3">
+                  <span>{user.Email}</span>
+                  <span className="text-sm text-gray-400">ایمیل</span>
+                </div>
+
+                <div className="flex flex-col py-3">
+                  <span>
+                    {user.Rols[0]
+                      ? user.Rols.map((role, i) => (
+                          <div key={i} className="flex">
+                            <span>{role}</span>,
+                          </div>
+                        ))
+                      : "نقشی تعیین نشده است"}
+                  </span>
+                  <span className="text-sm text-gray-400">نقش ها</span>
+                </div>
+                <div className="flex flex-col py-3">
+                  <span>
+                    {user.Skills[0]
+                      ? user.Skills.map((skill, i) => (
+                          <div key={i} className="flex">
+                            <span>{skill}</span>,
+                          </div>
+                        ))
+                      : "مهارتی تعیین نشده است"}
+                  </span>
+                  <span className="text-sm text-gray-400">مهارت ها</span>
+                </div>
+                <div className="flex flex-col py-3">
+                  <span>
+                    {user.Teams[0]
+                      ? user.Teams.map((team, i) => (
+                          <div key={i} className="flex">
+                            <span>{team}</span>,
+                          </div>
+                        ))
+                      : "تیمی تعیین نشده است"}
+                  </span>
+                  <span className="text-sm text-gray-400">تیم ها</span>
+                </div>
+              </div>
             </div>
             <div className="mt-5 mb-7 flex justify-center items-center">
               <Link
                 href="/edit-profile"
-                className="hover:bg-blue-500 w-60  hover:text-white py-2.5 rounded-lg bg-gray-100 text-blue-500 border border-blue-500 text-center transition"
+                className="hover:bg-blue-500 w-full hover:text-white py-2.5 rounded-lg bg-gray-100 text-blue-500 border border-blue-500 text-center transition"
               >
                 ویرایش پروفایل
               </Link>
-              <button
-                type="button"
-                className="border border-slate-500 transition hover:border-black hover:text-black text-slate-500 mr-2 p-2.5 rounded-lg"
-              >
-                <ShareIcon className="block w-6 h-6" />
-              </button>
             </div>
           </div>
-        </form>
+        </div>
       </Layout>
     </>
   );

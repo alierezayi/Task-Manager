@@ -19,6 +19,17 @@ export const fetchUser = createAsyncThunk(
     }
   }
 );
+export const editProfile = createAsyncThunk(
+  "user/editProfile",
+  async (token, data, { rejectWithValue }) => {
+    try {
+      const response = await userAPI.editProfile(token, data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const uploadImage = createAsyncThunk(
   "user/uploadImage",
   async (token, image) => {
@@ -47,19 +58,6 @@ const userSlice = createSlice({
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.pending = false;
-      })
-      .addCase(uploadImage.pending, (state) => {
-        state.pending = true;
-      })
-      .addCase(uploadImage.fulfilled, (state, action) => {
-        state.pending = false;
-
-        state.profileImg = action.payload;
-      })
-      .addCase(uploadImage.rejected, (state, action) => {
-        state.pending = false;
-
-        state.profileImg = action.payload;
       });
   },
 });

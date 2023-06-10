@@ -16,7 +16,7 @@ import {
   EllipsisVerticalIcon,
 } from "@heroicons/react/24/outline";
 
-import { logoutUser } from "@/features/authSlice";
+import { logoutUser } from "@/features/loginSlice";
 import { openSidebar } from "@/features/sidebarSlice";
 
 import Link from "next/link";
@@ -24,8 +24,9 @@ import Link from "next/link";
 export default function Header() {
   const dispatch = useDispatch();
 
-  const { token } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.login);
   const { user } = useSelector((state) => state.user);
+  console.log(user);
 
   useEffect(() => {
     dispatch(fetchUser(token));
@@ -55,7 +56,10 @@ export default function Header() {
 
   return (
     <>
-      <Disclosure as="nav" className="bg-white/80 backdrop-blur border-b border-b-slate-100 sticky top-0 z-10">
+      <Disclosure
+        as="nav"
+        className="bg-white/80 backdrop-blur border-b border-b-slate-100 sticky top-0 z-10"
+      >
         {({ open }) => (
           <>
             <div className="px-4 sm:px-6 lg:px-8">
@@ -159,7 +163,9 @@ export default function Header() {
                   </div>
                 </div>
 
-                <div className="-ml-2 flex md:hidden">
+                <div className="-ml-2 flex items-center md:hidden">
+                <span>{user.UserName}</span>
+
                   {/* Mobile menu button */}
                   <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-500 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-50">
                     {open ? (

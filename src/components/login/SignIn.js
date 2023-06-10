@@ -1,11 +1,13 @@
 import { useState } from "react";
+
 import { useForm } from "react-hook-form";
 
 import Notify from "../Notify";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { loginUser, checkOtpUser } from "@/features/authSlice";
+import { checkOtpUser } from "@/features/otpSlice";
+import { loginUser } from "@/features/loginSlice";
 
 const SignIn = () => {
   const {
@@ -21,67 +23,33 @@ const SignIn = () => {
   } = useForm();
 
   const dispatch = useDispatch();
-  const authState = useSelector((state) => state.auth);
-  const {
-    pending,
-    response: { otp, login },
-  } = authState;
+  const otpState = useSelector((state) => state.otp);
+  const loginState = useSelector((state) => state.login);
 
-  console.log(authState);
+  console.log(loginState);
+  console.log(otpState);
 
   const [PhoneNumber, setPhoneNumber] = useState("");
 
+  const [options, setOptions] = useState({});
+
+  const otpNotifyType = otpState.success ? "success" : "error";
+
+  // check otp user
   const submitOtp = (data) => {
     dispatch(checkOtpUser(data));
 
     setPhoneNumber(data.PhoneNumber);
   };
 
+  const loginNotifyType = loginState.success ? "success" : "error";
+
+  // login user
   const submitLogin = (data) => {
     const credentials = { PhoneNumber, code: data.code };
 
     dispatch(loginUser(credentials));
   };
-
-  const handleMessageType = () => {
-    if (otp?.success && otp?.message) {
-      return "success";
-    }
-    if (!otp?.success && otp?.message) {
-      return "error";
-    }
-    if (login?.success && login?.message) {
-      return "success";
-    }
-    if (!login?.success && login?.message) {
-      return "error";
-    }
-    return "success";
-  };
-
-  const showNotify = () => {
-    if (otp?.message || login?.message) {
-      return true;
-    }
-    return false;
-  };
-
-  const handleMessage = () => {
-    if (otp?.message) {
-      return otp?.message;
-    }
-    if (login?.message) {
-      return login?.message;
-    }
-    return "";
-  };
-
-  const notifyMessage = handleMessage();
-
-  const messageType = handleMessageType();
-
-  const isShowNotify = showNotify();
-  
 
   return (
     <>
@@ -122,8 +90,8 @@ const SignIn = () => {
         <div className="my-1 flex justify-end">
           <button
             type="submit"
-            className="text-blue-600 hover:text-blue-500 disabled:text-blue-300 text-start text-sm px-3"
-            disabled={otp?.success}
+            className="text-blue-600 hover:text-blue-500 disabled:text-blue-300 text-sm px-3"
+            disabled={otpState.success}
           >
             ارسال کد تایید
           </button>
@@ -149,7 +117,7 @@ const SignIn = () => {
           <label
             htmlFor="code"
             className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
-              otpErrors.PhoneNumber
+              loginErrors.code
                 ? "peer-focus:text-rose-600"
                 : "peer-focus:text-blue-600"
             } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
@@ -164,9 +132,9 @@ const SignIn = () => {
         <button
           type="submit"
           className="bg-blue-600 text-white py-3 rounded-xl active:transform active:scale-[.98] hover:bg-blue-700 transition mt-7"
-          disabled={pending}
+          disabled={loginState.pending}
         >
-          {pending ? (
+          {loginState.pending ? (
             <div className="flex items-center justify-center space-x-reverse space-x-3">
               <Spinner />
               <span>در حال پردازش. . .</span>
@@ -177,13 +145,23 @@ const SignIn = () => {
         </button>
 
         {/* show message */}
-        <span className="mt-7">
+
+        {otpState.message && (
           <Notify
-            toShow={isShowNotify}
-            message={notifyMessage}
-            type={messageType}
+            options={{
+              type: otpNotifyType,
+              description: otpState.message,
+            }}
           />
-        </span>
+        )}
+        {loginState.message && (
+          <Notify
+            options={{
+              type: loginNotifyType,
+              description: loginState.message,
+            }}
+          />
+        )}
       </form>
     </>
   );

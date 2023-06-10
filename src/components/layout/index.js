@@ -13,17 +13,17 @@ const Layout = ({ children }) => {
 
   const { sidebarOpen } = useSelector((state) => state.sidebar);
 
-  const authState = useSelector((state) => state.auth);
+  const loginState = useSelector((state) => state.login);
 
-  // console.log(authState.token);
+  // console.log(loginState.token);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!authState.isAuthenticated) {
+    if (!loginState.isAuthenticated) {
       router.push("/");
     }
-  }, [authState]);
+  }, [loginState]);
 
   return (
     <>

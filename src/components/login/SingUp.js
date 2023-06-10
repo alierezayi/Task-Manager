@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { registerUser } from "@/features/authSlice";
+import { registerUser } from "@/features/registerSlice";
 
 import { useForm } from "react-hook-form";
 
@@ -20,49 +20,17 @@ export default function SignUp() {
     formState: { errors },
   } = useForm();
 
-  const router = useRouter();
-
   const dispatch = useDispatch();
-  const {
-    pending,
-    response: { register: response },
-  } = useSelector((state) => state.auth);
 
-  const submitRegister = async (data) => {
+  const registerState = useSelector((state) => state.register);
+  const { pending, success, message } = registerState;
+
+  // submit register user
+  const submitRegister = (data) => {
     dispatch(registerUser(data));
 
     reset();
   };
-
-  const handleMessageType = () => {
-    if (response?.success && response?.message) {
-      return "success";
-    }
-    if (!response?.success && response?.message) {
-      return "error";
-    }
-    return "success";
-  };
-
-  const showNotify = () => {
-    if (response?.message) {
-      return true;
-    }
-    return false;
-  };
-
-  const handleMessage = () => {
-    if (response?.message) {
-      return response?.message;
-    }
-    return "";
-  };
-
-  const notifyMessage = handleMessage();
-
-  const messageType = handleMessageType();
-
-  const isShowNotify = showNotify();
 
   // handle show/hide pasword input
   const [showPassword, setShowPassword] = useState(false);
@@ -78,9 +46,12 @@ export default function SignUp() {
     <>
       <form
         onSubmit={handleSubmit(submitRegister)}
-        className="flex flex-col md:px-6 mt-4"
+        className="flex flex-col mt-4 md:px-2"
       >
-        <div className="grid grid-cols-4 gap-y-0.5 gap-x-8 mb-1">
+        <p className="text-sm mb-5">
+          خوش آمدید! برای ثبت نام لطفا فیلد های زیر را کامل کنید.
+        </p>
+        <div className="grid grid-cols-4 gap-y-3 gap-x-8 mb-1">
           {/* full name */}
           <div className="col-span-2">
             <div className="relative">
@@ -88,12 +59,20 @@ export default function SignUp() {
                 type="text"
                 id="full-name"
                 {...register("FullName", { required: true })}
-                className="block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                className={`block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                  errors.FullName
+                    ? "focus:border-rose-600"
+                    : "focus:border-blue-600"
+                }`}
                 placeholder=" "
               />
               <label
                 htmlFor="full-name"
-                className="absolute text-sm cursor-text text-gray-500 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+                  errors.FullName
+                    ? "peer-focus:text-rose-600"
+                    : "peer-focus:text-blue-600"
+                } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
               >
                 <span className="text-rose-500">*</span>
                 <span>نام کامل </span>
@@ -111,12 +90,20 @@ export default function SignUp() {
                 type="text"
                 id="user-name"
                 {...register("UserName", { required: true })}
-                className="block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                className={`block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                  errors.UserName
+                    ? "focus:border-rose-600"
+                    : "focus:border-blue-600"
+                }`}
                 placeholder=" "
               />
               <label
                 htmlFor="user-name"
-                className="absolute text-sm cursor-text text-gray-500 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+                  errors.UserName
+                    ? "peer-focus:text-rose-600"
+                    : "peer-focus:text-blue-600"
+                } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
               >
                 <span className="text-rose-500">*</span>
                 <span>نام کاربری </span>{" "}
@@ -134,13 +121,21 @@ export default function SignUp() {
                 type="number"
                 id="phone"
                 {...register("PhoneNumber", { required: true })}
-                className="block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                className={`block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                  errors.PhoneNumber
+                    ? "focus:border-rose-600"
+                    : "focus:border-blue-600"
+                }`}
                 placeholder=" "
                 maxLength={11}
               />
               <label
                 htmlFor="phone"
-                className="absolute text-sm cursor-text text-gray-500 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+                  errors.PhoneNumber
+                    ? "peer-focus:text-rose-600"
+                    : "peer-focus:text-blue-600"
+                } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
               >
                 <span className="text-rose-500">*</span>
                 <span>شماره تلفن</span>{" "}
@@ -158,12 +153,20 @@ export default function SignUp() {
                 type="email"
                 id="email"
                 {...register("Email", { required: true })}
-                className="block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                className={`block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                  errors.Email
+                    ? "focus:border-rose-600"
+                    : "focus:border-blue-600"
+                }`}
                 placeholder=" "
               />
               <label
                 htmlFor="email"
-                className="absolute text-sm cursor-text text-gray-500 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+                  errors.Email
+                    ? "peer-focus:text-rose-600"
+                    : "peer-focus:text-blue-600"
+                } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
               >
                 <span className="text-rose-500">*</span>
                 <span>ایمیل</span>{" "}
@@ -180,24 +183,32 @@ export default function SignUp() {
               {showPassword ? (
                 <EyeSlashIcon
                   onClick={togglePaswordVisibility}
-                  className="w-5 text-gray-500 hover:text-gray-700 absolute left-2 top-2.5"
+                  className="w-5 text-gray-400 absolute left-2 top-2.5 cursor-pointer"
                 />
               ) : (
                 <EyeIcon
                   onClick={togglePaswordVisibility}
-                  className="w-5 text-gray-500 hover:text-gray-700 absolute left-2 top-2.5"
+                  className="w-5 text-gray-400 absolute left-2 top-2.5 cursor-pointer"
                 />
               )}
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
                 {...register("Password", { required: true })}
-                className="block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                className={`block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                  errors.Password
+                    ? "focus:border-rose-600"
+                    : "focus:border-blue-600"
+                }`}
                 placeholder=" "
               />
               <label
                 htmlFor="password"
-                className="absolute text-sm cursor-text text-gray-500 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+                  errors.Password
+                    ? "peer-focus:text-rose-600"
+                    : "peer-focus:text-blue-600"
+                } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
               >
                 <span className="text-rose-500">*</span>
                 <span>رمز عبور</span>{" "}
@@ -214,31 +225,39 @@ export default function SignUp() {
               {showConfirmPassword ? (
                 <EyeSlashIcon
                   onClick={toggleConfirmPaswordVisibility}
-                  className="w-5 text-gray-500 hover:text-gray-700 absolute left-2 top-2.5"
+                  className="w-5 text-gray-400 cursor-pointer absolute left-2 top-2.5"
                 />
               ) : (
                 <EyeIcon
                   onClick={toggleConfirmPaswordVisibility}
-                  className="w-5 text-gray-500 hover:text-gray-700 absolute left-2 top-2.5"
+                  className="w-5 text-gray-400 cursor-pointer absolute left-2 top-2.5"
                 />
               )}
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 id="confirmPassword"
                 {...register("ConfirmPassword", { required: true })}
-                className="block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                className={`block px-2.5 py-2.5 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                  errors.ConfirmPassword
+                    ? "focus:border-rose-600"
+                    : "focus:border-blue-600"
+                }`}
                 placeholder=" "
               />
               <label
                 htmlFor="confirmPassword"
-                className="absolute text-sm cursor-text text-gray-500 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+                  errors.ConfirmPassword
+                    ? "peer-focus:text-rose-600"
+                    : "peer-focus:text-blue-600"
+                } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
               >
                 <span className="text-rose-500">*</span>
                 <span>تایید رمز عبور</span>{" "}
               </label>
             </div>
             <span className="text-red-500 mr-1 text-xs">
-              {errors.Password && "رمز عبور را تایید کنید"}
+              {errors.ConfirmPassword && "رمز عبور را تایید کنید"}
             </span>
           </div>
 
@@ -254,7 +273,7 @@ export default function SignUp() {
               />
               <label
                 htmlFor="role"
-                className="absolute text-sm cursor-text text-gray-500 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className="absolute text-sm cursor-text text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
               >
                 نقش
               </label>
@@ -276,7 +295,7 @@ export default function SignUp() {
               />
               <label
                 htmlFor="team"
-                className="absolute text-sm cursor-text text-gray-500 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className="absolute text-sm cursor-text text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
               >
                 تیم
               </label>
@@ -298,7 +317,7 @@ export default function SignUp() {
               />
               <label
                 htmlFor="skills"
-                className="absolute text-sm cursor-text text-gray-500 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
+                className="absolute text-sm cursor-text text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4"
               >
                 مهارت ها
               </label>
@@ -312,7 +331,7 @@ export default function SignUp() {
         {/* submit */}
         <button
           type="submit"
-          className="bg-blue-600 text-white py-3 rounded-xl active:transform active:scale-[.98] hover:bg-blue-700 transitionb"
+          className="bg-blue-600 text-white text-sm py-3 rounded-xl active:transform active:scale-[.98] hover:bg-blue-700 transition mt-2"
           disabled={pending}
         >
           {pending ? (
@@ -325,13 +344,14 @@ export default function SignUp() {
           )}
         </button>
         {/* show message */}
-        <span className="mt-7">
+        {message && (
           <Notify
-            toShow={isShowNotify}
-            message={notifyMessage}
-            type={messageType}
+            options={{
+              type: success ? "success" : "error",
+              description: message,
+            }}
           />
-        </span>
+        )}
       </form>
     </>
   );
