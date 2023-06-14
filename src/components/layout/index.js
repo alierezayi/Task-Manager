@@ -30,7 +30,7 @@ const Layout = ({ children }) => {
       <div className="min-h-screen flex">
         <Sidebar />
 
-        <main className="w-full h-screen overflow-auto bg-gray-100">
+        <main className="w-full h-screen overflow-auto bg-slate-50">
           <Header />
           {children}
         </main>

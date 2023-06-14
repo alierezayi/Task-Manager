@@ -26,6 +26,7 @@ function App() {
 
   const { user } = useSelector((state) => state.user);
   const { token } = useSelector((state) => state.login);
+  console.log(token);
 
   const dispatch = useDispatch();
 
@@ -65,7 +66,7 @@ function App() {
       .then((response) => setEditProfileRes(response.data))
       .catch((error) => setEditProfileRes(error));
 
-      router.push("/profile")
+    router.push("/profile");
   };
 
   const closeCaption = () => {
@@ -83,7 +84,7 @@ function App() {
         <div className="w-full h-full flex flex-col items-center">
           <div className="w-full md:max-w-xl">
             {/* profile image */}
-            <div className="rounded-xl bg-white drop-shadow-sm px-4 sm:px-8 py-10 mx-1 my-10">
+            <div className="md:rounded-xl bg-white px-4 sm:px-8 py-10 mx-1 my-10">
               <div>
                 {user.profile_image ? (
                   <Image
@@ -160,7 +161,7 @@ function App() {
                       id="ّFullName"
                       defaultValue={user.FullName}
                       {...register("FullName", { required: true })}
-                      className={`block px-2.5 py-2.5 border w-full text-sm mt-1 text-gray-900 bg-transparent rounded-lg border-1 border-gray-300  focus:outline-none peer focus:ring-0 ${
+                      className={`block px-2.5 py-2.5 border w-full text-sm mt-1 text-gray-900 bg-transparent rounded-lg border-1 border-gray-00  focus:outline-none peer focus:ring-0 ${
                         errors.FullName
                           ? "focus:border-rose-600"
                           : "focus:border-blue-600"
@@ -177,7 +178,7 @@ function App() {
                       id="PhoneNumber"
                       {...register("PhoneNumber", { required: true })}
                       defaultValue={user.PhoneNumber}
-                      className={`block px-2.5 py-2.5 border w-full text-sm mt-1 text-gray-900 bg-transparent rounded-lg border-1 border-gray-300  focus:outline-none peer focus:ring-0 ${
+                      className={`block px-2.5 py-2.5 border w-full text-sm mt-1 text-gray-900 bg-transparent rounded-lg border-1 border-gray-00  focus:outline-none peer focus:ring-0 ${
                         errors.PhoneNumber
                           ? "focus:border-rose-600"
                           : "focus:border-blue-600"
@@ -194,7 +195,7 @@ function App() {
                       id="email"
                       {...register("Email", { required: true })}
                       defaultValue={user.Email}
-                      className={`block px-2.5 py-2.5 border w-full text-sm mt-1 text-gray-900 bg-transparent rounded-lg border-1 border-gray-300  focus:outline-none peer focus:ring-0 ${
+                      className={`block px-2.5 py-2.5 border w-full text-sm mt-1 text-gray-900 bg-transparent rounded-lg border-1 border-gray-00  focus:outline-none peer focus:ring-0 ${
                         errors.Email
                           ? "focus:border-rose-600"
                           : "focus:border-blue-600"
@@ -208,15 +209,15 @@ function App() {
                 <div className="flex mt-10">
                   <Link
                     href="/profile"
-                    className="w-1/2 rounded-lg border text-center border-rose-400 text-rose-500 hover:text-white hover:bg-rose-500 transition-colors py-2"
+                    className="w-1/2 rounded-lg border text-center border-rose-400 text-rose-500 hover:text-white hover:bg-rose-500 transition-colors py-2.5 active:scale-[98%]"
                   >
                     لغو
                   </Link>
                   <button
-                    className="w-1/2 rounded-lg border text-white bg-blue-500 hover:bg-blue-600 transition-colors mr-3 py-2"
+                    className="w-1/2 rounded-lg border text-white bg-blue-600 hover:bg-blue-700 transition-colors mr-3 py-2.5 active:scale-[98%]"
                     type="submit"
                   >
-                    ثبت
+                    ذخیره{" "}
                   </button>
                 </div>
               </form>

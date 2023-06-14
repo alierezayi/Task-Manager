@@ -42,10 +42,6 @@ const Profile = () => {
           <div className="px-10">
             <div className="flex flex-col items-center md:items-start">
               <h1 className="text-2xl mt-4 mb-2">{user.FullName}</h1>
-              <div className="text-xs mt-2 text-gray-500">
-                <span className="mr-1">Date Created:</span>
-                <span>{user.createdAt}</span>
-              </div>{" "}
             </div>
 
             <div className="mt-12">

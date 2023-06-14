@@ -26,7 +26,7 @@ export default function Header() {
 
   const { token } = useSelector((state) => state.login);
   const { user } = useSelector((state) => state.user);
-  console.log(user);
+  // console.log(user);
 
   useEffect(() => {
     dispatch(fetchUser(token));
@@ -117,8 +117,8 @@ export default function Header() {
                                 <div className="h-14 w-14 rounded-full bg-gradient-to-tr from-purple-400 to-blue-500" />
                               )}
                             </div>
-                            <span>{user.FullName}</span>
-                            <span className="text-sm overflow-hidden text-gray-600">
+                            <span className="text-sm">{user.FullName}</span>
+                            <span className="text-xs overflow-hidden text-gray-600">
                               {user.Email}
                             </span>
                           </div>

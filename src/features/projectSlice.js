@@ -1,31 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import authAPI from "../services/authAPI";
-
+import projectAPI from "@/services/projectAPI";
 import Cookies from "js-cookie";
 
 const initialState = {
   pending: false,
-  
+  projects: [],
+  success: null,
+  error: null,
 };
 
-export const loginUser = createAsyncThunk(
-  "auth/login",
-  async (credentials, { rejectWithValue }) => {
+export const getAllProjects = createAsyncThunk(
+  "project/getAllProjects",
+  async (token, thunkAPI) => {
     try {
-      const response = await authAPI.login(credentials);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-export const registerUser = createAsyncThunk(
-  "auth/register",
-  async (userData, thunkAPI) => {
-    try {
-      const response = await authAPI.register(userData);
+      const response = await projectAPI.getProjectsList(token);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -33,125 +22,31 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const checkOtpUser = createAsyncThunk(
-  "auth/checkOtp",
-  async (otp, thunkAPI) => {
-    try {
-      const response = await authAPI.checkOtp(otp);
-      return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
-    }
-  }
-);
-
-const authSlice = createSlice({
-  name: "auth",
+const projectSlice = createSlice({
+  name: "project",
   initialState,
-  reducers: {
-    logoutUser: (state) => {
-      state.pending = false;
-
-      state.isAuthenticated = false;
-
-      Cookies.remove("user");
-    },
-    setPhoneNumber: (state, action) => {
-      state.PhoneNumber = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-
-      // register case
-      .addCase(registerUser.pending, (state) => {
+      .addCase(getAllProjects.pending, (state) => {
         state.pending = true;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(getAllProjects.fulfilled, (state, action) => {
         state.pending = false;
 
-        state.response.register = action.payload;
-        state.response.otp = {};
-        state.response.login = {};
+        state.projects = action.payload.projects;
 
-        // set user
-        state.isAuthenticated = false;
-        state.token = null;
+        state.success = action.payload.success;
       })
-      .addCase(registerUser.rejected, (state, action) => {
+      .addCase(getAllProjects.rejected, (state, action) => {
         state.pending = false;
 
-        state.response.register = action.payload;
-        state.response.otp = {};
-        state.response.login = {};
+        state.success = action.payload.success;
 
-        // set user
-        state.isAuthenticated = false;
-        state.token = null;
-      })
-
-      // otp case
-      .addCase(checkOtpUser.pending, (state) => {
-        state.pending = true;
-      })
-      .addCase(checkOtpUser.fulfilled, (state, action) => {
-        state.pending = false;
-
-        state.response.otp = action.payload;
-        state.response.register = {};
-        state.response.login = {};
-
-        // set user
-        state.isAuthenticated = false;
-        state.token = null;
-      })
-      .addCase(checkOtpUser.rejected, (state, action) => {
-        state.pending = false;
-
-        state.response.otp = action.payload;
-        state.response.register = {};
-        state.response.login = {};
-
-        // set user
-        state.isAuthenticated = false;
-        state.token = null;
-      })
-
-      // login case
-      .addCase(loginUser.pending, (state) => {
-        state.pending = true;
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.pending = false;
-
-        // set user
-        state.isAuthenticated = true;
-        state.token = action.payload.accessToken;
-
-        state.response.login = action.payload;
-        state.response.register = {};
-        state.response.otp = {};
-
-        // set cookie
-        const user = {
-          isAuthenticated: true,
-          token: action.payload.accessToken,
-        };
-        Cookies.set("user", JSON.stringify(user));
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.pending = false;
-
-        state.response.login = action.payload;
-        state.response.register = {};
-        state.response.otp = {};
-
-        // set user
-        state.isAuthenticated = false;
-        state.token = null;
+        state.error = action.error;
       });
   },
 });
 
-export const { logoutUser, setPhoneNumber } = authSlice.actions;
-export default authSlice.reducer;
+export const { logoutUser, setPhoneNumber } = projectSlice.actions;
+export default projectSlice.reducer;
