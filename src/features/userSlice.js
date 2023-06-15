@@ -4,7 +4,6 @@ import userAPI from "@/services/userAPI";
 
 const initialState = {
   pending: false,
-  profileImg: {},
   user: {},
 };
 
@@ -16,28 +15,6 @@ export const fetchUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
-    }
-  }
-);
-export const editProfile = createAsyncThunk(
-  "user/editProfile",
-  async (token, data, { rejectWithValue }) => {
-    try {
-      const response = await userAPI.editProfile(token, data);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-export const uploadImage = createAsyncThunk(
-  "user/uploadImage",
-  async (token, image) => {
-    try {
-      const response = await userAPI.setProfileImage(token, image);
-      return response.data;
-    } catch (error) {
-      return error.response.data;
     }
   }
 );

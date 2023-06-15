@@ -37,7 +37,7 @@ export default function Sidebar() {
     <>
       <div
         className={classNames(
-          "fixed h-screen md:relative md:block right-0 inset-y-0 bg-slate-300 shadow-sm md:shadow-none md:rounded-tl-[30px] z-20 transform transition-all md:transform-none",
+          "fixed h-screen md:relative md:block right-0 inset-y-0  bg-slate-200 drop-shadow-sm md:rounded-tl-[30px] z-20 transform transition-all md:transform-none",
           sidebarOpen ? "translate-x-0" : "translate-x-full",
           minimize ? "w-20" : "w-3/4 md:w-80 3xl:w-96"
         )}

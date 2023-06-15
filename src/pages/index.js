@@ -6,11 +6,6 @@ import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import SignIn from "@/components/login/SignIn";
-import SignUp from "@/components/login/SingUp";
-
-import { Tab } from "@headlessui/react";
-
 import registerImage from "../../public/images/dl.beatsnoop.com-1683470923.png";
 import Timer from "@/components/Timer";
 import Spinner from "@/components/Spinner";
@@ -18,8 +13,7 @@ import { useForm } from "react-hook-form";
 import Notify from "@/components/Notify";
 import Link from "next/link";
 import { loginUser } from "@/features/loginSlice";
-import { checkOtpUser } from "@/features/otpSlice";
-import { LockClosedIcon } from "@heroicons/react/24/outline";
+import { LockClosedIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import authAPI from "@/services/authAPI";
 
 export default function Login() {
@@ -53,7 +47,7 @@ export default function Login() {
 
   const dispatch = useDispatch();
 
-  console.log(loginState);
+  // console.log(loginState);
 
   const [otpResponse, setOtpResponse] = useState({
     success: null,
@@ -71,7 +65,7 @@ export default function Login() {
       .checkOtp(data)
       .then((res) => {
         const id = new Date();
-
+        
         setOtpResponse(res.data);
         setNotifyList((prevList) => [...prevList, { id, ...res.data }]);
       })
@@ -92,10 +86,22 @@ export default function Login() {
   const submitLogin = (data) => {
     const credentials = { PhoneNumber, code: data.code };
 
-    dispatch(loginUser(credentials));
+    dispatch(loginUser(credentials)).then((res) => {
+      const id = new Date();
+
+      const notification = {
+        id,
+        message: res.payload.success
+          ? "عملیات ورود با موفقیت انجام شد."
+          : res.payload.success,
+        ...res.payload,
+      };
+
+      setNotifyList((prevList) => [...prevList, notification]);
+    });
   };
-  console.log(otpResponse);
-  console.log(notifyList);
+  // console.log(otpResponse);
+  // console.log(notifyList);
 
   const [secondsLeft, setSecondsLeft] = useState(120);
   const [showTimer, setShowTimer] = useState(false);
@@ -111,6 +117,7 @@ export default function Login() {
   useEffect(() => {
     if (secondsLeft === 0) {
       setShowTimer(false);
+      setSecondsLeft(120);
     }
   }, [secondsLeft]);
 
@@ -126,8 +133,8 @@ export default function Login() {
         <Notify list={notifyList} updateList={setNotifyList} />
         <div className="lg:w-1/2 min-h-screen flex justify-center items-center py-4 ">
           <div className="w-full max-w-md px-4 py-10 md:px-6 bg-white mx-4 rounded-2xl drop-shadow-sm mt-5">
-            <div className="mb-8 space-y-2">
-              <div className="w-14 h-14 flex justify-center items-center mx-auto bg-gradient-to-tr from-rose-200 to-orange-500 rounded-full">
+            <div className="mb-10 space-y-2">
+              <div className="w-14 h-14 flex justify-center items-center mx-auto bg-orange-500 rounded-full">
                 <LockClosedIcon className="w-8 h-8 text-white" />
               </div>
               <h1 className="text-xl text-center font-semibold text-gray-500">
@@ -135,15 +142,18 @@ export default function Login() {
               </h1>
             </div>
             <form onSubmit={handleOtp(submitOtp)} className="flex flex-col">
-              <label className="text-gray-700 mb-3.5 text-sm">
+              <label className="text-gray-700 mb-4 text-sm">
                 برای اعتبار سنجی لطفا شماره موبایل خود را وارد کنید
               </label>
               <div className="relative">
+                <span className="absolute inset-y-1 right-3 inline-flex items-center">
+                  <PhoneIcon className="w-5 h-5 text-gray-500" />
+                </span>
                 <input
                   type="number"
                   id="PhoneNumber"
                   {...otpRegister("PhoneNumber", { required: true })}
-                  className={`block px-2.5 py-3 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                  className={`block px-2.5 pr-10 py-3 border w-full text-sm text-gray-900 bg-transparent rounded-2xl border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
                     otpErrors.PhoneNumber
                       ? "focus:border-rose-600"
                       : "focus:border-blue-600"
@@ -152,17 +162,17 @@ export default function Login() {
                 />
                 <label
                   htmlFor="PhoneNumber"
-                  className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+                  className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform translate-x-10 -translate-y-4 scale-75 top-1 right-10 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
                     otpErrors.PhoneNumber
                       ? "peer-focus:text-rose-600"
                       : "peer-focus:text-blue-600"
-                  } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
+                  } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:translate-x-0 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:translate-x-10 peer-focus:scale-75 peer-focus:-translate-y-4`}
                 >
                   شماره موبایل
                 </label>
                 <button
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-600 rounded-lg inlinef text-white disabled:bg-blue-400 text-sm px-6 absolute left-1 inset-y-1"
+                  className="bg-blue-500 hover:bg-blue-600 rounded-xl text-white disabled:bg-blue-400 text-xs px-6 absolute left-1 inset-y-1"
                   disabled={showTimer}
                 >
                   {showTimer ? (
@@ -187,7 +197,7 @@ export default function Login() {
                     type="number"
                     id="code"
                     {...loginRegister("code", { required: true })}
-                    className={`block px-2.5 py-3 border w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                    className={`block px-2.5 py-3 border w-full text-sm text-gray-900 bg-transparent rounded-2xl border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
                       loginErrors.code
                         ? "focus:border-rose-600"
                         : "focus:border-blue-600"
@@ -211,7 +221,7 @@ export default function Login() {
 
                 <button
                   type="submit"
-                  className="text-white bg-blue-600 border border-blue-500 py-3 rounded-xl active:transform active:scale-[.98] hover:bg-blue-600 hover:text-white transition mt-5"
+                  className="text-white bg-blue-500 border text-sm border-blue-500 py-3 rounded-2xl active:transform active:scale-[.98] hover:bg-blue-600 hover:text-white transition mt-5"
                   disabled={loginState.pending}
                 >
                   {loginState.pending ? (
@@ -228,7 +238,7 @@ export default function Login() {
               </form>
             ) : null}
 
-            <div className="text-xs mt-10">
+            <div className={`text-xs ${showLoginForm ? "mt-10" : "mt-24"}`}>
               اگر ثبت نام نکرده اید از این لینک اقدام به ثبت نام کنید.{" "}
               <Link href="/register" className="text-blue-500">
                 ثبت نام

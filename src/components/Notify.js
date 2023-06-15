@@ -31,7 +31,7 @@ const Notify = ({ list, updateList }) => {
   }, [list]);
 
   return (
-    <div className="absolute inset-x-0 top-5 max-h-screen overflow-y-hidden">
+    <div className="fixed inset-x-0 z-30 top-5 max-h-screen overflow-y-hidden">
       <div className="w-full max-w-sm mx-auto space-y-5">
         {list.map((item, index) => (
           <div
@@ -63,7 +63,7 @@ const Notify = ({ list, updateList }) => {
                   className="w-5 h-5"
                 />
               )}
-              <div className="mr-3">{item.message}</div>
+              <div className="mr-3 ml-2">{item.message}</div>
             </div>
             <button onClick={() => handleCloseItem(item.id)}>
               <XMarkIcon
