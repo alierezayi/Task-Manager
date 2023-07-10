@@ -55,13 +55,13 @@ const Projects = () => {
         </div>
         {projects.length > 0 ? (
           <div className="mt-5">
-            <div className="py-6 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center space-y-4 md:space-y-0">
+            <div className="py-8 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center space-y-4 md:space-y-0">
               {/* title */}
               <h1 className="text-xl">پروژه ها</h1>
 
               {/* search */}
-              <SearchBar items={projects} className="w-full" projects>
-                <div className="rounded-2xl w-full md:w-[250px] bg-slate-200 hover:bg-slate-100 border text-blue-900 py-2 px-4 flex cursor-pointer">
+              <SearchBar items={projects} className="w-full max-w-xs" projects>
+                <div className="rounded-2xl bg-slate-200 hover:bg-slate-100 border text-blue-900 py-2 px-4 flex cursor-pointer">
                   <MagnifyingGlassIcon className="w-6 h-6 text-blue-500 ml-2" />
                   <span>جستجو ...</span>
                 </div>

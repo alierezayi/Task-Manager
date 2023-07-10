@@ -1,20 +1,23 @@
-import TimeAgo from "@/components/TimeAgo";
-import Layout from "@/components/layout";
-import { Menu, Transition } from "@headlessui/react";
+import Image from "next/image";
+import Link from "next/link";
+
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+
 import {
   EllipsisVerticalIcon,
   LockClosedIcon,
-  TagIcon,
   PencilIcon,
+  TagIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import Cookies from "js-cookie";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React, { Fragment, useEffect } from "react";
-import { useSelector } from "react-redux";
-import projectImage from "../../../public/images/original.jpg"
+
+import TimeAgo from "@/components/TimeAgo";
+import Layout from "@/components/layout";
+
+import projectImage from "../../../public/images/original.jpg";
+import { Menu, Transition } from "@headlessui/react";
+import { Fragment } from "react";
 
 const ProjectDetails = () => {
   const { projects } = useSelector((state) => state.project);
@@ -100,13 +103,13 @@ const ProjectDetails = () => {
         </div>
 
         <div className="space-y-10 mt-10">
-          <div className="w-full space-y-1 text-sm px-2">
-            <h3 className="font-bold">توضیحات</h3>
+          <div className="w-full space-y-1  px-2">
+            <h3 className="">توضیحات</h3>
             <p className="text-gray-500">{project.Text}</p>
           </div>
 
-          <div className="w-full space-y-1 text-sm px-2">
-            <h3 className="font-bold">تگ ها</h3>
+          <div className="w-full space-y-1 px-2">
+            <h3 className="">تگ ها</h3>
             <ul className="space-x-reverse space-x-2 flex-wrap overflow-hidden">
               {project.tags.length ? (
                 project.tags.map((tag, index) => (
@@ -125,12 +128,12 @@ const ProjectDetails = () => {
           </div>
 
           <div className="w-full space-y-1 px-2">
-            <h3 className="font-bold">تیم ها</h3>
+            <h3 className="">تیم ها</h3>
             <div className="grid grid-cols-1 gap-y-4 gap-x-10 sm:grid-cols-2 rounded-xl">
               {teams.length ? (
                 teams.map((team, index) => (
                   <Link
-                    href={`teams/${team._id}`}
+                    href={`/teams/${team._id}`}
                     key={index}
                     className="flex flex-col p-2.5 rounded-xl shadow-sm border border-slate-50 hover:border-slate-200 bg-slate-50 px-4"
                   >
@@ -144,7 +147,7 @@ const ProjectDetails = () => {
             </div>
           </div>
 
-          <div className="w-full flex justify-between border-t pt-3 pb-4 items-center space-y-1 text-xs md:text-sm px-2 text-gray-500">
+          <div className="w-full flex justify-between border-t pt-4 pb-5 items-center space-y-1 text-xs  px-2 text-gray-500">
             <div className="flex items-center">
               <div className="flex items-center ml-1">
                 <LockClosedIcon className="w-4 h-4" />
