@@ -5,6 +5,7 @@ import loginSlice from "@/features/loginSlice";
 import userSlice from "@/features/userSlice";
 import sidebarSlice from "@/features/sidebarSlice";
 import projectSlice from "@/features/projectSlice";
+import teamSlice from "@/features/teamSlice";
 
 const makeStore = () =>
   configureStore({
@@ -13,6 +14,7 @@ const makeStore = () =>
       user: userSlice,
       sidebar: sidebarSlice,
       project: projectSlice,
+      team: teamSlice,
     },
     devTools: true,
   });

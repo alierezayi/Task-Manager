@@ -1,5 +1,4 @@
 import Notify from "@/components/Notify";
-import Timer from "@/components/Timer";
 import authAPI from "@/services/authAPI";
 import { PhoneIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -7,6 +6,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { HiOutlineMail } from "react-icons/hi";
 import { MdPassword } from "react-icons/md";
+import { TbLetterCaseToggle } from "react-icons/tb";
 
 const Register = () => {
   const {
@@ -127,7 +127,10 @@ const Register = () => {
           </div>{" "}
           <h1 className="text-xl text-center">ایجاد حساب کاربری</h1>
           <p className="text-sm text-center">
-            اگر حساب کابری دارید از طریق این لینک به صفحه ورود بروید <Link href="/" className="mr-1 text-blue-500">ورود کاربر</Link>
+            اگر حساب کابری دارید از طریق این لینک به صفحه ورود بروید{" "}
+            <Link href="/" className="mr-1 text-blue-500">
+              ورود کاربر
+            </Link>
           </p>
         </div>
         <div className="flex flex-col divide-y">
@@ -137,12 +140,15 @@ const Register = () => {
               <div className="space-y-5">
                 <div>
                   <div className="relative">
+                    <span className="absolute inset-y-1 right-4 inline-flex items-center">
+                      <TbLetterCaseToggle className="w-[21px] h-[21px] text-gray-500" />
+                    </span>
                     <input
                       type="text"
                       id="FullName"
                       autoComplete="name"
                       {...register("FullName", { required: true })}
-                      className={`block p-3 border w-full text-sm text-gray-900 bg-transparent rounded-2xl border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                      className={`block px-2.5 pr-12 py-3 border w-full text-sm text-gray-900 bg-transparent rounded-2xl border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
                         errors.FullName
                           ? "focus:border-rose-600"
                           : "focus:border-blue-600"
@@ -151,11 +157,11 @@ const Register = () => {
                     />
                     <label
                       htmlFor="FullName"
-                      className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+                      className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform translate-x-10 -translate-y-4 scale-75 top-1 right-10 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
                         errors.FullName
                           ? "peer-focus:text-rose-600"
                           : "peer-focus:text-blue-600"
-                      } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
+                      } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:translate-x-0 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:translate-x-10 peer-focus:scale-75 peer-focus:-translate-y-4`}
                     >
                       نام کامل{" "}
                     </label>

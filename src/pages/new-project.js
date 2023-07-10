@@ -3,10 +3,12 @@ import Layout from "@/components/layout";
 import projectAPI from "@/services/projectAPI";
 import { PlusIcon, TagIcon } from "@heroicons/react/24/outline";
 import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
+import projectIcon from "../../public/images/add-note-svgrepo-com (2).svg";
 
 const NewProject = () => {
   const {
@@ -74,21 +76,32 @@ const NewProject = () => {
         <title>پروژه جدید</title>
       </Head>
       <Layout>
-        <div className="w-full h-full">
-          <div className="w-full max-w-xl my-10 md:rounded-xl bg-white shadow-sm mx-auto px-4 md:px-10 py-20">
-            <h1 className="font-semibold text-lg mt-0">ساخت پروژه جدید</h1>
+        <div className="w-full h-full px-2">
+          <div className="w-full max-w-xl my-10 rounded-2xl bg-white shadow-sm mx-auto px-6 md:px-14 py-10">
+            <div className="flex flex-col justify-center items-center">
+              <div className="w-14 h-14 bg-green-500 rounded-full flex flex-col justify-center items-center mb-2">
+                <Image
+                  src={projectIcon}
+                  width="auto"
+                  height="auto"
+                  alt=""
+                  className="w-8 h-8"
+                />{" "}
+              </div>
+              <h1 className="font-semibold text-lg mt-0">ساخت پروژه جدید</h1>
+            </div>
 
-            <form className="mt-5" onSubmit={handleSubmit(newProjectHandler)}>
+            <form className="mt-10" onSubmit={handleSubmit(newProjectHandler)}>
               <div className="space-y-5">
                 <div>
-                  <label htmlFor="title" className=" text-gray-500">
+                  <label htmlFor="title" className=" text-gray-600">
                     عنوان
                   </label>
                   <input
                     type="text"
                     id="title"
                     {...register("Title", { required: true })}
-                    className={`block px-2.5 py-2 border w-full bg-white text-sm mt-1 text-gray-900 bg-transparent rounded-lg border-1 border-gray-200  focus:outline-none peer focus:ring-0 ${
+                    className={`block p-3 border w-full bg-white text-sm mt-1 text-gray-900 bg-transparent rounded-2xl border-1 border-gray-200  focus:outline-none peer focus:ring-0 ${
                       errors.Title
                         ? "focus:border-rose-600"
                         : "focus:border-blue-600"
@@ -101,13 +114,13 @@ const NewProject = () => {
                   )}
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="text" className="text-sm text-gray-500">
+                  <label htmlFor="text" className="text-sm text-gray-600">
                     متن{" "}
                   </label>
                   <textarea
                     id="text"
                     {...register("Text", { required: true, maxLength: 50 })}
-                    className={`border rounded-md w-full p-2 mt-1 text-sm outline-none focus:border-blue-600 ${
+                    className={`border rounded-2xl w-full p-3 mt-1 text-sm outline-none focus:border-blue-600 ${
                       errors.Text
                         ? "focus:border-rose-600"
                         : "focus:border-blue-600"
@@ -122,7 +135,7 @@ const NewProject = () => {
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="text-sm text-gray-500" htmlFor="tags">
+                  <label className="text-sm text-gray-600" htmlFor="tags">
                     تگ ها
                   </label>
                   <div className="inline-flex items-center">
@@ -146,7 +159,7 @@ const NewProject = () => {
                       ? tags.map((tag, index) => (
                           <li
                             key={index}
-                            className="inline-flex py-1 mt-1 items-center px-3 rounded-full border border-blue-300 text-blue-600 bg-blue-50"
+                            className="inline-flex py-1 mt-1 items-center px-3 rounded-full text-blue-600 bg-blue-50"
                           >
                             <TagIcon className="w4 h-4 ml-1" />
                             <span className="text-xs">{tag}</span>
@@ -156,7 +169,7 @@ const NewProject = () => {
                   </ul>
                 </div>
                 <div className="flex flex-col space-y-2">
-                  <label htmlFor="image" className="text-sm text-gray-500">
+                  <label htmlFor="image" className="text-sm text-gray-600">
                     عکس
                   </label>
                   <input
@@ -164,7 +177,7 @@ const NewProject = () => {
                     accept="image/*"
                     id="image"
                     onChange={fileInputHandler}
-                    className="text-sm text-grey-500 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:cursor-pointer hover:file:bg-amber-50hover:file:text-amber-700"
+                    className="text-sm text-grey-500 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-slate-50 file:text-slate-700 hover:file:cursor-pointer hover:file:bg-amber-50hover:file:text-amber-700"
                   />
                   {errors.image && (
                     <span className="text-xs text-rose-500 mt-1">
@@ -176,19 +189,19 @@ const NewProject = () => {
               <div className="flex justify-center mt-10">
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-md bg-blue-600 hover:bg-blue-700 flex justify-center text-white"
+                  className="w-full py-2.5 rounded-2xl bg-blue-600 hover:bg-blue-700 flex justify-center text-white active:transform active:scale-95 transition"
                 >
                   ایجاد پروژه
                 </button>
               </div>
-              {Object.keys(response).length > 0 && (
+              {/* {Object.keys(response).length > 0 && (
                 <Notify
                   options={{
                     type: response.success ? "success" : "error",
                     description: response.message,
                   }}
                 />
-              )}
+              )} */}
             </form>
           </div>
         </div>

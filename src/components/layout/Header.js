@@ -35,7 +35,7 @@ export default function Header() {
   const userNavigation = [
     {
       name: "پروفایل",
-      href: "/profile",
+      href: `/${user.UserName}`,
       icon: <UserIcon className="w-5 h-5 ml-1" />,
     },
     {
@@ -164,7 +164,7 @@ export default function Header() {
                 </div>
 
                 <div className="-ml-2 flex items-center md:hidden">
-                <span>{user.UserName}</span>
+                  <span>{user.UserName}</span>
 
                   {/* Mobile menu button */}
                   <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-500 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-50">

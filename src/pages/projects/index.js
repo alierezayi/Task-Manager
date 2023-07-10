@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-
-// import projects from "@/components/dashboard/projects/projectData.json";
 import Layout from "@/components/layout";
-import Project from "@/components/dashboard/projects/Project";
-import projectAPI from "@/services/projectAPI";
+import Project from "@/components/Project";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProjects } from "@/features/projectSlice";
 import Link from "next/link";
 import { PlusIcon } from "@heroicons/react/24/solid";
-import Cookies from "js-cookie";
+import Image from "next/image";
+import projectIcon from "../../../public/images/add-note-svgrepo-com (2).svg";
+import SearchBar from "@/components/SearchBar";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const Projects = () => {
   const { token } = useSelector((state) => state.login);
@@ -23,18 +23,49 @@ const Projects = () => {
 
   return (
     <Layout>
-      <div className="relative">
-        {pending && (
-          <div className="absolute inset-0 h-screen flex justify-center items-center backdrop-blur-sm">
-            <Spinner />
-            <span className="text-blue-500 mr-3">درحال بارگذاری ...</span>
+      {pending && (
+        <div className="absolute inset-0 h-screen flex justify-center items-center backdrop-blur-sm">
+          <Spinner />
+          <span className="text-blue-500 mr-3">درحال بارگذاری ...</span>
+        </div>
+      )}
+
+      <div className="w-full mx-auto max-w-[1450px] md:px-10 px-5 py-10">
+        <div>
+          <div className="flex justify-center items-center px-2">
+            <div className="w-full md:max-w-md border space-y-3 border-gray-300 hover:bg-slate-100/50 border-dashed rounded-xl py-10 flex flex-col justify-center items-center">
+              <span className="text-sm">
+                برای شروع یک پروژه اینجا کلیک کنید
+              </span>
+              <Link
+                href="/new-project"
+                className="px-3 py-2 bg-sky-400 inline-flex text-white rounded-lg text-sm"
+              >
+                <Image
+                  src={projectIcon}
+                  width="auto"
+                  height="auto"
+                  alt=""
+                  className="w-5 h-5 ml-2"
+                />{" "}
+                ساخت پروژه جدید
+              </Link>
+            </div>
           </div>
-        )}
+        </div>
         {projects.length > 0 ? (
-          <div className=" w-full mx-auto max-w-[1450px] md:px-10 px-5 py-10">
-            {/* title */}
-            <div>
-              <h1 className="py-4 text-2xl ">پروژه ها</h1>
+          <div className="mt-5">
+            <div className="py-6 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center space-y-4 md:space-y-0">
+              {/* title */}
+              <h1 className="text-xl">پروژه ها</h1>
+
+              {/* search */}
+              <SearchBar items={projects} className="w-full" projects>
+                <div className="rounded-2xl w-full md:w-[250px] bg-slate-200 hover:bg-slate-100 border text-blue-900 py-2 px-4 flex cursor-pointer">
+                  <MagnifyingGlassIcon className="w-6 h-6 text-blue-500 ml-2" />
+                  <span>جستجو ...</span>
+                </div>
+              </SearchBar>
             </div>
 
             {/* Cards */}

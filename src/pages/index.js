@@ -15,6 +15,7 @@ import Link from "next/link";
 import { loginUser } from "@/features/loginSlice";
 import { LockClosedIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import authAPI from "@/services/authAPI";
+import { MdPassword } from "react-icons/md";
 
 export default function Login() {
   function classNames(...classes) {
@@ -65,7 +66,7 @@ export default function Login() {
       .checkOtp(data)
       .then((res) => {
         const id = new Date();
-        
+
         setOtpResponse(res.data);
         setNotifyList((prevList) => [...prevList, { id, ...res.data }]);
       })
@@ -121,8 +122,6 @@ export default function Login() {
     }
   }, [secondsLeft]);
 
-  // useEffect(() => {}, [otpState]);
-
   return (
     <>
       <Head>
@@ -137,7 +136,7 @@ export default function Login() {
               <div className="w-14 h-14 flex justify-center items-center mx-auto bg-orange-500 rounded-full">
                 <LockClosedIcon className="w-8 h-8 text-white" />
               </div>
-              <h1 className="text-xl text-center font-semibold text-gray-500">
+              <h1 className="text-xl text-center font-semibold text-gray-800">
                 ورود به حساب کاربری
               </h1>
             </div>
@@ -193,11 +192,14 @@ export default function Login() {
                 className="flex flex-col mt-4"
               >
                 <div className="relative">
+                  <span className="absolute inset-y-1 right-4 inline-flex items-center">
+                    <MdPassword className="w-[21px] h-[21px] text-gray-500" />
+                  </span>
                   <input
                     type="number"
                     id="code"
                     {...loginRegister("code", { required: true })}
-                    className={`block px-2.5 py-3 border w-full text-sm text-gray-900 bg-transparent rounded-2xl border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
+                    className={`block px-2.5 pr-11 py-3 border w-full text-sm text-gray-900 bg-transparent rounded-2xl border-1 border-gray-300 appearance-none focus:outline-none peer focus:ring-0 ${
                       loginErrors.code
                         ? "focus:border-rose-600"
                         : "focus:border-blue-600"
@@ -206,11 +208,11 @@ export default function Login() {
                   />
                   <label
                     htmlFor="code"
-                    className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-1 right-1 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
+                    className={`absolute text-sm cursor-text text-gray-500 dark:text-gray-400 duration-300 transform translate-x-10 -translate-y-4 scale-75 top-1 right-10 z-10 origin-[0] bg-white px-2 peer-focus:px-2 ${
                       loginErrors.code
                         ? "peer-focus:text-rose-600"
                         : "peer-focus:text-blue-600"
-                    } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4`}
+                    } peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:translate-x-0 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:translate-x-10 peer-focus:scale-75 peer-focus:-translate-y-4`}
                   >
                     کد تایید
                   </label>

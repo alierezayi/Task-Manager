@@ -1,9 +1,11 @@
-import teamAPI from "@/services/teamApi";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import teamAPI from "@/services/teamAPI";
 
 const initialState = {
   pending: false,
-  Teams: [],
+  teams: [],
+  success: null,
+  error: null,
 };
 
 export const getAllTeams = createAsyncThunk(
@@ -30,7 +32,7 @@ const teamSlice = createSlice({
       .addCase(getAllTeams.fulfilled, (state, action) => {
         state.pending = false;
 
-        state.projects = action.payload.projects;
+        state.teams = action.payload.team;
 
         state.success = action.payload.success;
       })
@@ -44,5 +46,5 @@ const teamSlice = createSlice({
   },
 });
 
-export const { logoutUser, setPhoneNumber } = teamSlice.actions;
+export const {} = teamSlice.actions;
 export default teamSlice.reducer;
